@@ -64,7 +64,6 @@ public class TimeSpanImage {
         Font font2 = new Font("宋体", Font.PLAIN, 12);
 
         for (TimeSpan timeSpan : timeSpans) {
-
             // span序号
             g.setFont(font1);
             g.setColor(Color.decode("#87CEFA"));
@@ -77,6 +76,12 @@ public class TimeSpanImage {
             g.setFont(font2);
             g.setColor(Color.red);
             g.drawString(timeSpan.getSpanLabel(), timeSpan.getX() + 5, timeSpan.getY()+20);
+
+            if (timeSpan.isFirst()){
+                String rootSpanTimeLabel = timeSpan.getRootSpanTimeLabel();
+                g.drawString(rootSpanTimeLabel, timeSpan.getX() + TimeSpan.MAX_WITH - 400, timeSpan.getY()+20);
+            }
+
         }
     }
 

@@ -91,7 +91,15 @@ public abstract class WatchContext {
 
     public void show(){
         if (isEnabled() && isStopped()){
-            TimeSpanFrame.show(this);
+            try {
+                TimeSpanFrame.show(this);
+            } catch (java.awt.HeadlessException e) {
+                // Spring boot出现java.awt.HeadlessException的解决办法
+                // -Djava.awt.headless=false
+                // SpringApplicationBuilder.headless(false)
+            } catch (Exception e){
+                log.warn("WatchContext show fail : {}", e.getMessage());
+            }
         } else {
             log.info("WatchContext did not enabled or stop ， please call stop()");
         }

@@ -43,6 +43,11 @@ public class TimeSpanPanel extends JPanel {
             g.setFont(font2);
             g.setColor(Color.red);
             g.drawString(timeSpan.getSpanLabel(), timeSpan.getX() + 5, timeSpan.getY() + 20);
+
+            if (timeSpan.isFirst()){
+                String rootSpanTimeLabel = timeSpan.getRootSpanTimeLabel();
+                g.drawString(rootSpanTimeLabel, timeSpan.getX() + TimeSpan.MAX_WITH - 300, timeSpan.getY()+20);
+            }
         }
     }
 

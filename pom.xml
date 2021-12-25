@@ -8,7 +8,7 @@
     <artifactId>time-watcher</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <description>ding talk client</description>
+    <description>耗时分析工具</description>
     <name>time-watcher</name>
     <url>https://github.com/kancyframework/time-watcher</url>
 

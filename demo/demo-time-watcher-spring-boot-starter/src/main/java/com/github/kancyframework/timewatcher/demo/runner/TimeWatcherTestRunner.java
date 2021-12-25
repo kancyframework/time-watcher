@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 public class TimeWatcherTestRunner implements ApplicationRunner {
 
-    @TimeWatch
+    @TimeWatch(noThrows = false)
     @Override
     public void run(ApplicationArguments args) {
         TimeWatcher.watch("runner-test-1", this::randomSleep);

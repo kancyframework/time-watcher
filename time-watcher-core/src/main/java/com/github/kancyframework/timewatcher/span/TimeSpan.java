@@ -3,6 +3,9 @@ package com.github.kancyframework.timewatcher.span;
 import com.github.kancyframework.timewatcher.WatchContext;
 import com.github.kancyframework.timewatcher.WatchRecord;
 
+import java.text.SimpleDateFormat;
+import java.util.Objects;
+
 /**
  * Span
  *
@@ -55,23 +58,51 @@ public class TimeSpan {
     }
 
     public String getSpanLabel(){
-        if (index == 0){
+        if (isFirst()){
             return getRootSpanLabel();
         }
-        return String.format("%sms | %s | %s",
+        return String.format("%sms | %s | %s.%s",
                 record.getCostMillis(),
-                record.getWatchName(),
-                record.getThreadName()
+                record.getThreadName(),
+                getClassSimpleName(record.getProperties().get("__className__").toString()),
+                record.getWatchName()
         );
     }
 
+    private String getClassSimpleName(String className){
+        if (Objects.isNull(className)){
+            return null;
+        }
+
+        if (!className.contains(".")){
+            return className;
+        }
+        return className.substring(className.lastIndexOf(".")+1);
+    }
+
+    public String getRootSpanTimeLabel() {
+        if (isFirst()){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            return String.format("%s ~ %s",
+                    sdf.format(context.getRootWatchRecord().getStartTime()),
+                    sdf.format(context.getRootWatchRecord().getStopTime())
+            );
+        }
+        return "";
+    }
+
     private String getRootSpanLabel() {
-        return String.format("%sms | %s | %s | （ %s ）",
+        return String.format("%sms | %s | %s - %s.%s",
                 record.getCostMillis(),
-                record.getWatchName(),
                 record.getThreadName(),
-                context.getContextName()
+                context.getContextName(),
+                context.getRootWatchRecord().getProperties().get("__className__"),
+                context.getRootWatchRecord().getProperties().get("__methodName__")
         );
+    }
+
+    public boolean isFirst(){
+        return Objects.equals(index, 0);
     }
 
     public int getX() {

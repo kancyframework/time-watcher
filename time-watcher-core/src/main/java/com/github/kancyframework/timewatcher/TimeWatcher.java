@@ -60,13 +60,18 @@ public abstract class TimeWatcher {
     }
 
     public static void start(String contextName){
-        startWatch(contextName);
+        SimpleWatchContext watchContext = getSimpleWatchContext();
+        if (Objects.isNull(watchContext.getContextId())){
+            watchContext.start(contextName);
+            setCallClassNameAndMethodName();
+        }
     }
 
     public static void startWatch(String contextName){
         SimpleWatchContext watchContext = getSimpleWatchContext();
         if (Objects.isNull(watchContext.getContextId())){
             watchContext.start(contextName);
+            setCallClassNameAndMethodName();
         }
     }
 
@@ -251,30 +256,40 @@ public abstract class TimeWatcher {
     }
 
     /**
+     * 设置调用者的类名和方法名称
+     */
+    private static void setCallClassNameAndMethodName() {
+        getWatchContext().getRootWatchRecord().getProperties().put("__className__",
+                Thread.currentThread().getStackTrace()[3].getClassName());
+        getWatchContext().getRootWatchRecord().getProperties().put("__methodName__",
+                Thread.currentThread().getStackTrace()[3].getMethodName());
+    }
+
+    /**
      * 以Gui形式显示
      */
-    public void showGui(){
+    public static void showGui(){
         WatchContext watchContext = getWatchContext();
         watchContext.show();
     }
     /**
      * 将耗时统计分析结果,以png图片形式保存
      */
-    public void save2Image(){
+    public static void save2Image(){
         WatchContext watchContext = getWatchContext();
         watchContext.save();
     }
     /**
      * 将耗时统计分析结果,以png图片形式保存
      */
-    public void save2Image(String filePath){
+    public static void save2Image(String filePath){
         WatchContext watchContext = getWatchContext();
         watchContext.save(filePath);
     }
     /**
      * 将耗时统计分析结果,以png图片形式保存
      */
-    public void save2Image(File file){
+    public static void save2Image(File file){
         WatchContext watchContext = getWatchContext();
         watchContext.save(file);
     }

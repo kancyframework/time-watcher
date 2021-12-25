@@ -15,20 +15,22 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TimeWatcherTests {
 
     public static void main(String[] args) {
-        new TimeWatcherTests().test02();
+        new TimeWatcherTests().test01();
     }
 
     @Test
     public void test01(){
         TimeWatcher.enabled();
-        TimeWatcher.startWatch("test");
+        TimeWatcher.start("test");
 
         TimeWatcher.watch("test-1", ()-> sleep(100));
         TimeWatcher.watch("test-2", () -> sleep(100));
         TimeWatcher.watch("test-3", ()-> sleep(200));
+        TimeWatcher.watch("test-4", ()-> sleep(200));
         TimeWatcher.stopWatch();
 
         System.out.println(JSON.toJSONString(TimeWatcher.getWatchContext(), true));
+        TimeWatcher.showGui();
         TimeWatcher.close();
     }
 

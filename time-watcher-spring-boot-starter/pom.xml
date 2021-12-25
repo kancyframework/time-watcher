@@ -11,7 +11,7 @@
 
     <artifactId>time-watcher-spring-boot-starter</artifactId>
     <name>time-watcher-spring-boot-starter</name>
-    <description>time-watcher-spring-boot-starter</description>
+    <description>耗时分析工具 time watcher spring boot 启动器</description>
     <url>https://github.com/kancyframework/time-watcher/time-watcher-spring-boot-starter</url>
 
     <licenses>

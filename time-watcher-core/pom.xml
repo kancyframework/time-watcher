@@ -11,7 +11,7 @@
 
     <artifactId>time-watcher-core</artifactId>
     <name>time-watcher-core</name>
-    <description>time-watcher-core</description>
+    <description>>耗时分析工具核心</description>
     <url>https://github.com/kancyframework/time-watcher/time-watcher-core</url>
 
     <licenses>
