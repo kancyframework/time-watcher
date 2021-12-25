@@ -4,6 +4,11 @@
       "name": "timewatcher",
       "type": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
       "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties"
+    },
+    {
+      "name": "timewatcher.task-executor",
+      "type": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties"
     }
   ],
   "properties": [
@@ -33,6 +38,46 @@
       "type": "java.util.Map<java.lang.String,java.lang.Object>",
       "description": "全局:扩展属性",
       "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties"
+    },
+    {
+      "name": "timewatcher.task-executor.core-pool-size",
+      "type": "java.lang.Integer",
+      "description": "核心池大小(默认:CPU核数)",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "defaultValue": 0
+    },
+    {
+      "name": "timewatcher.task-executor.max-pool-size",
+      "type": "java.lang.Integer",
+      "description": "最大池大小(默认:CPU核数 x 2)",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "defaultValue": 0
+    },
+    {
+      "name": "timewatcher.task-executor.queue-capacity",
+      "type": "java.lang.Integer",
+      "description": "队列容量",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "defaultValue": 1000
+    },
+    {
+      "name": "timewatcher.task-executor.rejected-handler-bean-name",
+      "type": "java.lang.String",
+      "description": "拒绝的处理程序bean名称",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig"
+    },
+    {
+      "name": "timewatcher.task-executor.task-decorator-bean-name",
+      "type": "java.lang.String",
+      "description": "任务装饰程序bean名称",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig"
+    },
+    {
+      "name": "timewatcher.task-executor.thread-name-prefix",
+      "type": "java.lang.String",
+      "description": "线程名称前缀",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "defaultValue": "timewatcher-"
     },
     {
       "name": "timewatcher.watchers",

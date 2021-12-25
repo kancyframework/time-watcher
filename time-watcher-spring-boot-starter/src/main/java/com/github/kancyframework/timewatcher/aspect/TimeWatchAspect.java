@@ -4,6 +4,7 @@ import com.github.kancyframework.timewatcher.SimpleWatchContext;
 import com.github.kancyframework.timewatcher.TimeWatcher;
 import com.github.kancyframework.timewatcher.WatchContext;
 import com.github.kancyframework.timewatcher.annotation.TimeWatch;
+import com.github.kancyframework.timewatcher.event.TimeWatchResultEvent;
 import com.github.kancyframework.timewatcher.event.TimeWatchStartedEvent;
 import com.github.kancyframework.timewatcher.event.TimeWatchStoppedEvent;
 import com.github.kancyframework.timewatcher.interceptor.TimeWatchInterceptor;
@@ -92,7 +93,7 @@ public class TimeWatchAspect {
                 }
                 // 发送事件
                 if (watchContext.isEnabled()){
-                    TimeWatchStoppedEvent timeWatchStoppedEvent = new TimeWatchStoppedEvent(joinPoint, TimeWatcher.getWatchContext());
+                    TimeWatchStoppedEvent timeWatchStoppedEvent = new TimeWatchResultEvent(joinPoint, TimeWatcher.getWatchContext());
                     timeWatchStoppedEvent.setThrowable(throwable);
                     applicationContext.publishEvent(timeWatchStoppedEvent);
                 }

@@ -3,7 +3,9 @@ package com.github.kancyframework.timewatcher.properties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,6 +37,13 @@ public class TimeWatchProperties {
     /**
      * 全局:扩展属性
      */
-    private Map<String, Object> properties;
+    private Map<String, Object> properties = new HashMap<>();
+
+    /**
+     * 线程池属性
+     */
+    @NestedConfigurationProperty
+    private ThreadPoolConfig taskExecutor = new ThreadPoolConfig();
+
 
 }

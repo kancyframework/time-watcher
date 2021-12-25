@@ -245,7 +245,7 @@ public abstract class TimeWatcher {
     }
 
     private static void putIfAbsentClassAndMethodName(Map<String, Object> properties, SerializableFunction function) {
-        if (Objects.nonNull(properties)) {
+        if (Objects.nonNull(properties) && isEnabled()) {
             if (!properties.containsKey("__className__")){
                 properties.put("__className__", function.getWatchClassName());
             }
