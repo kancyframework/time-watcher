@@ -59,40 +59,43 @@ public class DefaultTimeWatchInterceptor extends AbstractTimeWatchInterceptor {
      */
     @Override
     public void doPreHandle(WatchContext context) {
-        if (Objects.isNull(timeWatchProperties)){
-            return;
-        }
-
-        // 设置全局属性
-        Map<String, Object> properties = timeWatchProperties.getProperties();
-        if (Objects.nonNull(properties)){
-            context.putContextProperty(properties);
-        }
-
-        // 设置私有属性
-        WatcherConfig watcherConfig = findWatcherConfig(context.getContextName());
-        if (Objects.nonNull(watcherConfig)){
-            // 额外属性
-            context.putContextProperty(watcherConfig.getProperties());
-            // 耗时时间
-            if (context instanceof SimpleWatchContext){
-                SimpleWatchContext simpleWatchContext = (SimpleWatchContext) context;
-                Long maxTotalCostMillis = simpleWatchContext.getMaxTotalCostMillis();
-                Long maxCostMillis = simpleWatchContext.getMaxCostMillis();
-
-                if (Objects.isNull(maxTotalCostMillis) || maxTotalCostMillis < 0){
-                    simpleWatchContext.setMaxTotalCostMillis(watcherConfig.getMaxTotalCostMillis());
-                }
-
-                if (Objects.isNull(maxCostMillis) || maxCostMillis < 0){
-                    simpleWatchContext.setMaxCostMillis(watcherConfig.getMaxCostMillis());
-                }
-            }
-        }
 
         // 设置内置属性
         context.putContextProperty("__url__", getCurrentRequestUrl());
 
+        // 设置配置属性
+        putContextProperties(context);
+
+    }
+
+    private void putContextProperties(WatchContext context) {
+        if (Objects.nonNull(timeWatchProperties)){
+            // 设置全局属性
+            Map<String, Object> properties = timeWatchProperties.getProperties();
+            if (Objects.nonNull(properties)){
+                context.putContextProperty(properties);
+            }
+            // 设置私有属性
+            WatcherConfig watcherConfig = findWatcherConfig(context.getContextName());
+            if (Objects.nonNull(watcherConfig)){
+                // 额外属性
+                context.putContextProperty(watcherConfig.getProperties());
+                // 耗时时间
+                if (context instanceof SimpleWatchContext){
+                    SimpleWatchContext simpleWatchContext = (SimpleWatchContext) context;
+                    Long maxTotalCostMillis = simpleWatchContext.getMaxTotalCostMillis();
+                    Long maxCostMillis = simpleWatchContext.getMaxCostMillis();
+
+                    if (Objects.isNull(maxTotalCostMillis) || maxTotalCostMillis < 0){
+                        simpleWatchContext.setMaxTotalCostMillis(watcherConfig.getMaxTotalCostMillis());
+                    }
+
+                    if (Objects.isNull(maxCostMillis) || maxCostMillis < 0){
+                        simpleWatchContext.setMaxCostMillis(watcherConfig.getMaxCostMillis());
+                    }
+                }
+            }
+        }
     }
 
     private WatcherConfig findWatcherConfig(String contextName) {
@@ -120,19 +123,19 @@ public class DefaultTimeWatchInterceptor extends AbstractTimeWatchInterceptor {
      */
     @Override
     public void doPostHandle(WatchContext context) {
-        // 回填index
-        context.getRootWatchRecord().setIndex(0);
-        List<WatchRecord> records = context.getWatchRecords();
-        if (Objects.nonNull(records)){
-            for (int i = 0; i < records.size(); i++) {
-                records.get(i).setIndex(i+1);
-            }
-        }
 
-        // 设置内置属性
-        context.putContextProperty("__watchSize__", Objects.isNull(records) ? 0 : records.size());
+        // 回填index
+        fillWatchRecordIndex(context);
 
         // 处理完成后，将耗时较小的数据进行移除
+        removeIfShortCost(context);
+    }
+
+    /**
+     * 将耗时较少的数据进行移除,无需后续分析
+     * @param context 上下文
+     */
+    private void removeIfShortCost(WatchContext context) {
         if (context instanceof SimpleWatchContext){
             SimpleWatchContext simpleWatchContext = (SimpleWatchContext) context;
 
@@ -151,6 +154,22 @@ public class DefaultTimeWatchInterceptor extends AbstractTimeWatchInterceptor {
                 }
             }
         }
+    }
+
+    /**
+     * 设置观测序号
+     *
+     * @param context 上下文
+     */
+    private void fillWatchRecordIndex(WatchContext context) {
+        List<WatchRecord> records = context.getWatchRecords();
+        // 1.设置观测序号
+        context.getRootWatchRecord().setIndex(0);
+        for (int i = 0; i < records.size(); i++) {
+            records.get(i).setIndex(i+1);
+        }
+        // 2.设置内置属性
+        context.putContextProperty("__watchSize__", context.getWatchRecords().size());
     }
 
     @Override
