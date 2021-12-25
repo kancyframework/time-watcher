@@ -2,6 +2,7 @@ package com.github.kancyframework.timewatcher;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
@@ -159,6 +160,7 @@ public abstract class TimeWatcher {
 
         R result = null;
         try {
+            putIfAbsentClassAndMethodName(properties, supplier);
             preWatch(watchName, properties);
             result = supplier.get();
         } finally {
@@ -177,6 +179,8 @@ public abstract class TimeWatcher {
 
     public static void watch(String watchName, ConsumerFunction<WatchContext> consumer,
                               Map<String, Object> properties){
+        watchName = Objects.isNull(watchName) || watchName.isEmpty() ? consumer.getWatchMethodName() : watchName;
+        putIfAbsentClassAndMethodName(properties, consumer);
         watch(watchName,() -> {
             consumer.accept(getSimpleWatchContext());
             return 0;
@@ -193,7 +197,9 @@ public abstract class TimeWatcher {
 
     public static void watch(String watchName, Function function,
                              Map<String, Object> properties){
-        watch(watchName,() -> {
+        watchName = Objects.isNull(watchName) || watchName.isEmpty() ? function.getWatchMethodName() : watchName;
+        putIfAbsentClassAndMethodName(properties, function);
+        watch(watchName, () -> {
             function.execute();
             return 0;
         }, properties);
@@ -232,6 +238,47 @@ public abstract class TimeWatcher {
             log.error("postWatch fail: watchName={} , properties={}\n{}", watchName, properties, e);
         }
     }
+
+    private static void putIfAbsentClassAndMethodName(Map<String, Object> properties, SerializableFunction function) {
+        if (Objects.nonNull(properties)) {
+            if (!properties.containsKey("__className__")){
+                properties.put("__className__", function.getWatchClassName());
+            }
+            if (!properties.containsKey("__methodName__")){
+                properties.put("__methodName__", function.getWatchMethodName());
+            }
+        }
+    }
+
+    /**
+     * 以Gui形式显示
+     */
+    public void showGui(){
+        WatchContext watchContext = getWatchContext();
+        watchContext.show();
+    }
+    /**
+     * 将耗时统计分析结果,以png图片形式保存
+     */
+    public void save2Image(){
+        WatchContext watchContext = getWatchContext();
+        watchContext.save();
+    }
+    /**
+     * 将耗时统计分析结果,以png图片形式保存
+     */
+    public void save2Image(String filePath){
+        WatchContext watchContext = getWatchContext();
+        watchContext.save(filePath);
+    }
+    /**
+     * 将耗时统计分析结果,以png图片形式保存
+     */
+    public void save2Image(File file){
+        WatchContext watchContext = getWatchContext();
+        watchContext.save(file);
+    }
+
 
     /**
      * Function
@@ -289,23 +336,38 @@ public abstract class TimeWatcher {
      */
     public interface SerializableFunction extends Serializable {
 
+        Map<String, SerializedLambda> serializedLambdaCache = new WeakHashMap<>();
+
         default SerializedLambda getSerializedLambda() throws Exception {
+            String className = getClass().getName();
+            // 从缓存中获取
+            SerializedLambda serializedLambda = serializedLambdaCache.get(className);
+            if (Objects.nonNull(serializedLambda)){
+                return serializedLambda;
+            }
+
+            // 反射获取
             Method writeReplaceMethod = getClass().getDeclaredMethod("writeReplace");
-            if (Objects.nonNull(writeReplaceMethod)){
-                writeReplaceMethod.setAccessible(true);
-                Object serializedLambda = writeReplaceMethod.invoke(this);
-                if (serializedLambda instanceof SerializedLambda){
-                    return SerializedLambda.class.cast(serializedLambda);
-                }
+            writeReplaceMethod.setAccessible(true);
+            Object serializedLambdaObject = writeReplaceMethod.invoke(this);
+            if (serializedLambdaObject instanceof SerializedLambda){
+                SerializedLambda lambda = SerializedLambda.class.cast(serializedLambdaObject);
+                serializedLambdaCache.put(className, lambda);
+                return lambda;
             }
             return null;
         }
 
+        /**
+         * 获取观测的类名
+         *
+         * @return {@link String}
+         */
         default String getWatchClassName() {
             try {
                 SerializedLambda serializedLambda = getSerializedLambda();
                 if (Objects.nonNull(serializedLambda)){
-                    return serializedLambda.getImplClass();
+                    return serializedLambda.getImplClass().replace("/", ".");
                 }
             } catch (Exception e) {
                 // ignore
@@ -313,6 +375,10 @@ public abstract class TimeWatcher {
             return null;
         }
 
+        /**
+         * 获取观测的方法
+         * @return
+         */
         default String getWatchMethodName() {
             try {
                 SerializedLambda serializedLambda = getSerializedLambda();
@@ -329,6 +395,5 @@ public abstract class TimeWatcher {
             return null;
         }
     }
-
 
 }

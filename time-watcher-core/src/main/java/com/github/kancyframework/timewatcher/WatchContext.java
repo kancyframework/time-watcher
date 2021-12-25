@@ -1,7 +1,11 @@
 package com.github.kancyframework.timewatcher;
 
+import com.github.kancyframework.timewatcher.span.TimeSpanFrame;
+import com.github.kancyframework.timewatcher.span.TimeSpanImage;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -12,6 +16,7 @@ import java.util.Objects;
  * @author huangchengkang
  * @date 2021/12/24 20:01
  */
+@Slf4j
 @Data
 public abstract class WatchContext {
     /**
@@ -50,7 +55,7 @@ public abstract class WatchContext {
     private WatchContext parentContext;
 
     /**
-     * 跟部观测记录
+     * 根部观测记录
      */
     private WatchRecord rootWatchRecord;
 
@@ -81,6 +86,31 @@ public abstract class WatchContext {
         if (Objects.nonNull(rootWatchRecord)
                 && Objects.nonNull(properties)){
             rootWatchRecord.getProperties().putAll(properties);
+        }
+    }
+
+    public void show(){
+        if (isEnabled() && isStopped()){
+            TimeSpanFrame.show(this);
+        } else {
+            log.info("WatchContext did not enabled or stop ， please call stop()");
+        }
+    }
+
+    public void save(){
+        save(String.format("%s.png", getContextId()));
+    }
+
+    public void save(String filePath){
+        save(new File(filePath));
+    }
+
+    public void save(File file){
+        if (isEnabled() && isStopped()){
+            TimeSpanImage timeSpanImage = TimeSpanImage.create(this);
+            timeSpanImage.save(file);
+        }else {
+            log.info("WatchContext did not enabled or stop ， please call stop()");
         }
     }
 

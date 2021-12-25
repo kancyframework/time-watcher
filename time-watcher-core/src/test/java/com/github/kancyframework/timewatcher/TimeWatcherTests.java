@@ -14,6 +14,10 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class TimeWatcherTests {
 
+    public static void main(String[] args) {
+        new TimeWatcherTests().test02();
+    }
+
     @Test
     public void test01(){
         TimeWatcher.enabled();
@@ -42,7 +46,12 @@ public class TimeWatcherTests {
                 TimeWatcher.close();
             });
         });
-        TimeWatcher.watch("tes3", ()-> sleep(1000));
+        TimeWatcher.watch("tes3", ()-> sleep(100));
+
+        int len = ThreadLocalRandom.current().nextInt(10, 30);
+        for (int i = 4; i < len; i++) {
+            TimeWatcher.watch("tes" + i, ()-> sleep(20));
+        }
 
         TimeWatcher.stopWatch();
         System.out.println(JSON.toJSONString(TimeWatcher.getWatchContext()));

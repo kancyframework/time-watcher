@@ -1,8 +1,12 @@
 package com.github.kancyframework.timewatcher.demo.listener;
 
 import com.alibaba.fastjson.JSON;
+import com.github.kancyframework.timewatcher.WatchContext;
 import com.github.kancyframework.timewatcher.event.TimeWatchEvent;
 import com.github.kancyframework.timewatcher.event.TimeWatchStoppedEvent;
+import com.github.kancyframework.timewatcher.span.GuiWatchContextView;
+import com.github.kancyframework.timewatcher.span.ImageWatchContextView;
+import com.github.kancyframework.timewatcher.span.WatchContextView;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -33,6 +37,10 @@ public class TimeWatchEventListener implements ApplicationListener<TimeWatchEven
             objects.add(watchStoppedEvent.getRootTimeWatchRecord());
             objects.addAll(watchStoppedEvent.getTimeWatchRecords());
             System.out.println(JSON.toJSONString(objects, true));
+
+            WatchContext watchContext = event.getWatchContext();
+            WatchContextView guiWatchContextView = new GuiWatchContextView(watchContext);
+            guiWatchContextView.showView();
         }
     }
 }
