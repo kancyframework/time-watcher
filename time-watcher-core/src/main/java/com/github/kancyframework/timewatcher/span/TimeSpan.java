@@ -14,24 +14,20 @@ import java.util.Objects;
  */
 public class TimeSpan {
 
-    public static final int MAX_WITH = 1800;
-    public static final int LINE_HEIGHT = 30;
+    public static final int MAX_WITH = 1500;
+    public static final int LINE_HEIGHT = 26;
     public static final int LINE_SPACING = 5;
+    public static final int LINE_CENTER = (LINE_HEIGHT + LINE_SPACING * 2 ) / 2 ;
 
     public static final int MARGIN = 50;
     public static final int MARGIN_TOP = 10;
 
-    private int index;
     private int x;
     private int y;
     private int with;
     private int height;
 
-    private long costMillis;
-    private String watchName;
-    private String threadName;
-    private String contextName;
-
+    private int index;
     public WatchRecord record;
     public WatchContext context;
 
@@ -54,6 +50,9 @@ public class TimeSpan {
     }
 
     public String getIndexLabel(){
+        if (index < 10){
+            return String.format("[0%d]", index);
+        }
         return String.format("[%d]", index);
     }
 
@@ -64,13 +63,13 @@ public class TimeSpan {
         return String.format("%sms | %s | %s.%s",
                 record.getCostMillis(),
                 record.getThreadName(),
-                getClassSimpleName(record.getProperties().get("__className__").toString()),
+                getClassSimpleName(String.valueOf(record.getProperties().get("__className__"))),
                 record.getWatchName()
         );
     }
 
     private String getClassSimpleName(String className){
-        if (Objects.isNull(className)){
+        if (Objects.isNull(className) || "null".equalsIgnoreCase(className)){
             return null;
         }
 
@@ -92,12 +91,14 @@ public class TimeSpan {
     }
 
     private String getRootSpanLabel() {
-        return String.format("%sms | %s | %s - %s.%s",
+        return String.format("%sms | %s | %s [%s.%s]%s",
                 record.getCostMillis(),
                 record.getThreadName(),
                 context.getContextName(),
                 context.getRootWatchRecord().getProperties().get("__className__"),
-                context.getRootWatchRecord().getProperties().get("__methodName__")
+                context.getRootWatchRecord().getProperties().get("__methodName__"),
+                Objects.isNull(context.getTraceId()) ? "" : String.format(" ( %s )", context.getContextId())
+
         );
     }
 

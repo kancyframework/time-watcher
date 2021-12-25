@@ -259,10 +259,14 @@ public abstract class TimeWatcher {
      * 设置调用者的类名和方法名称
      */
     private static void setCallClassNameAndMethodName() {
-        getWatchContext().getRootWatchRecord().getProperties().put("__className__",
-                Thread.currentThread().getStackTrace()[3].getClassName());
-        getWatchContext().getRootWatchRecord().getProperties().put("__methodName__",
-                Thread.currentThread().getStackTrace()[3].getMethodName());
+        try {
+            getWatchContext().getRootWatchRecord().getProperties().put("__className__",
+                    Thread.currentThread().getStackTrace()[3].getClassName());
+            getWatchContext().getRootWatchRecord().getProperties().put("__methodName__",
+                    Thread.currentThread().getStackTrace()[3].getMethodName());
+        } catch (Exception e) {
+            log.warn("setCallClassNameAndMethodName fail : {}", e.getMessage());
+        }
     }
 
     /**

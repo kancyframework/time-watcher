@@ -33,22 +33,33 @@ public class TimeSpanPanel extends JPanel {
         for (TimeSpan timeSpan : timeSpans) {
             // span序号
             g.setFont(font1);
-            g.setColor(Color.decode("#87CEFA"));
-            g.drawString(timeSpan.getIndexLabel(), 15, timeSpan.getY() + 20);
+            g.setColor(Color.GRAY);
+            g.drawString(timeSpan.getIndexLabel(), 5, timeSpan.getY()+ TimeSpan.LINE_CENTER);
 
             // 画span
+            g.setColor(Color.decode("#87CEFA"));
             g.fillRect(timeSpan.getX(), timeSpan.getY(), timeSpan.getWith(), timeSpan.getHeight());
 
             // 画span标签
             g.setFont(font2);
-            g.setColor(Color.red);
-            g.drawString(timeSpan.getSpanLabel(), timeSpan.getX() + 5, timeSpan.getY() + 20);
+            g.setColor(Color.GRAY);
+            g.drawString(timeSpan.getSpanLabel(), timeSpan.getX() + 5, timeSpan.getY()+ TimeSpan.LINE_CENTER);
 
             if (timeSpan.isFirst()){
                 String rootSpanTimeLabel = timeSpan.getRootSpanTimeLabel();
-                g.drawString(rootSpanTimeLabel, timeSpan.getX() + TimeSpan.MAX_WITH - 300, timeSpan.getY()+20);
+                g.drawString(rootSpanTimeLabel, timeSpan.getX() + TimeSpan.MAX_WITH - 300, timeSpan.getY()+ TimeSpan.LINE_CENTER);
             }
         }
+
+        // 画左边测线(虚线)
+        Stroke dash = new BasicStroke(1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND,
+                2f, new float[] { 10, 5, },0f);
+        ((Graphics2D)g).setStroke(dash);
+        g.setColor(Color.decode("#8DCDFE"));
+        g.drawLine(40, 3, 40, getHeight()-3);
+
+        // 关闭资源
+        g.dispose();
     }
 
 }

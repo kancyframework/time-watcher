@@ -25,6 +25,8 @@ public class ImageUtils {
         final Graphics2D g2d = targetImg.createGraphics();
         // 绘制内容
         consumer.accept(g2d);
+        // 释放资源
+        g2d.dispose();
         //保存成图片
         try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
             ImageIO.write(targetImg, "PNG", outputStream);
@@ -40,6 +42,8 @@ public class ImageUtils {
         final Graphics2D g2d = targetImg.createGraphics();
         // 绘制内容
         consumer.accept(g2d);
+        // 释放资源
+        g2d.dispose();
         //保存成图片
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             ImageIO.write(targetImg, "PNG", byteArrayOutputStream);
