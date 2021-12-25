@@ -1,14 +1,9 @@
 package com.github.kancyframework.timewatcher.demo.listener;
 
-import com.alibaba.fastjson.JSON;
-import com.github.kancyframework.timewatcher.WatchContext;
 import com.github.kancyframework.timewatcher.event.TimeWatchEvent;
-import com.github.kancyframework.timewatcher.event.TimeWatchStoppedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 
 /**
  * TimeWatchEventListener
@@ -28,15 +23,5 @@ public class TimeWatchEventListener implements ApplicationListener<TimeWatchEven
     @Override
     public void onApplicationEvent(TimeWatchEvent event) {
         System.err.println(event);
-        if (event instanceof TimeWatchStoppedEvent){
-            TimeWatchStoppedEvent watchStoppedEvent = TimeWatchStoppedEvent.class.cast(event);
-            ArrayList<Object> objects = new ArrayList<>();
-            objects.add(watchStoppedEvent.getRootTimeWatchRecord());
-            objects.addAll(watchStoppedEvent.getTimeWatchRecords());
-            System.out.println(JSON.toJSONString(objects, true));
-
-            WatchContext watchContext = event.getWatchContext();
-            watchContext.save();
-        }
     }
 }

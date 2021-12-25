@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -67,6 +68,9 @@ public class TimeWatcherThreadPoolAutoConfiguration {
     }
 
     private RejectedExecutionHandler findRejectedHandler(String beanName) {
+        if (!StringUtils.hasText(beanName)){
+            return null;
+        }
         try {
             return applicationContext.getBean(beanName, RejectedExecutionHandler.class);
         } catch (BeansException e) {
@@ -75,6 +79,9 @@ public class TimeWatcherThreadPoolAutoConfiguration {
     }
 
     private TaskDecorator findTaskDecorator(String beanName) {
+        if (!StringUtils.hasText(beanName)){
+            return null;
+        }
         try {
             return applicationContext.getBean(beanName, TaskDecorator.class);
         } catch (BeansException e) {
