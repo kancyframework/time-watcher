@@ -3,6 +3,7 @@ package com.github.kancyframework.timewatcher.demo.controller;
 import com.github.kancyframework.timewatcher.TimeWatcher;
 import com.github.kancyframework.timewatcher.annotation.TimeWatch;
 import com.github.kancyframework.timewatcher.annotation.Watcher;
+import com.github.kancyframework.timewatcher.demo.aspect.Test;
 import com.github.kancyframework.timewatcher.demo.service.DemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ public class TimeWatcherTestController {
     @Autowired
     private DemoService demoService;
 
+    @Test
     @Watcher
     @GetMapping("/index")
     public Object index() throws Exception {

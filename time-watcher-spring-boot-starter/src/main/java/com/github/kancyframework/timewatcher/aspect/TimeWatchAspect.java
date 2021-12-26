@@ -16,6 +16,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -35,7 +36,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Aspect
-public class TimeWatchAspect {
+public class TimeWatchAspect implements Ordered {
     
     @Autowired
     private ApplicationContext applicationContext;
@@ -219,4 +220,9 @@ public class TimeWatchAspect {
         return null;
     }
 
+    @Override
+    public int getOrder() {
+        // 最高优先级，整体统计时间包含其他低优先级切面执行的时间
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
 }
