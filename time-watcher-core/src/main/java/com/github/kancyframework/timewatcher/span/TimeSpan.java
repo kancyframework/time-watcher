@@ -18,18 +18,18 @@ public abstract class TimeSpan {
 
     private static Color skyBlueColor = Color.decode("#87CDFE");
 
-    public static final int MAX_WITH = 1500;
+    public static final int MAX_WITH = 1600;
     public static final int LINE_HEIGHT = 26;
     public static final int LINE_SPACING = 5;
     public static final int LINE_CENTER = (LINE_HEIGHT + LINE_SPACING * 2 ) / 2 ;
 
-    public static final int MARGIN = 50;
+    public static final int MARGIN = 60;
     public static final int MARGIN_TOP = 10;
     public static final int CHAR_WITH = 8;
 
     protected int x;
     protected int y;
-    protected int with;
+    protected int width;
     protected int height;
     protected final int index;
 
@@ -88,8 +88,8 @@ public abstract class TimeSpan {
         return y;
     }
 
-    public int getWith() {
-        return with;
+    public int getWidth() {
+        return width;
     }
 
     public int getHeight() {

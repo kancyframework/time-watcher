@@ -12,6 +12,9 @@ import java.util.List;
  * @date 2021/12/25 21:47
  */
 public class TimeSpanPanel extends JPanel {
+
+    private static final Color indexLineColor = Color.decode("#8DCDFE");
+
     private final List<TimeSpan> timeSpans;
 
     public TimeSpanPanel(List<TimeSpan> timeSpans) {
@@ -33,7 +36,7 @@ public class TimeSpanPanel extends JPanel {
 
             // 画span
             g.setColor(timeSpan.getSpanColor());
-            g.fillRect(timeSpan.getX(), timeSpan.getY(), timeSpan.getWith(), timeSpan.getHeight());
+            g.fillRect(timeSpan.getX(), timeSpan.getY(), timeSpan.getWidth(), timeSpan.getHeight());
 
             // 画span标签
             AttributedString spanLabelAttributedString = timeSpan.getSpanLabelAttributedString();
@@ -51,8 +54,8 @@ public class TimeSpanPanel extends JPanel {
         Stroke dash = new BasicStroke(1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND,
                 2f, new float[] { 10, 5, },0f);
         ((Graphics2D)g).setStroke(dash);
-        g.setColor(Color.decode("#8DCDFE"));
-        g.drawLine(40, 3, 40, getHeight()-3);
+        g.setColor(indexLineColor);
+        g.drawLine(45, 3, 45, getHeight()-3);
 
         // 关闭资源
         g.dispose();

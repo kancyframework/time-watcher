@@ -15,6 +15,8 @@ import java.util.List;
  * @date 2021/12/25 22:10
  */
 public class TimeSpanImage {
+    private static final Color indexLineColor = Color.decode("#8DCDFE");
+
     private final List<TimeSpan> timeSpans;
 
     public TimeSpanImage(List<TimeSpan> timeSpans) {
@@ -68,7 +70,7 @@ public class TimeSpanImage {
 
             // 画span
             g.setColor(timeSpan.getSpanColor());
-            g.fillRect(timeSpan.getX(), timeSpan.getY(), timeSpan.getWith(), timeSpan.getHeight());
+            g.fillRect(timeSpan.getX(), timeSpan.getY(), timeSpan.getWidth(), timeSpan.getHeight());
 
             // 画span标签
             AttributedString spanLabelAttributedString = timeSpan.getSpanLabelAttributedString();
@@ -86,9 +88,9 @@ public class TimeSpanImage {
         Stroke dash = new BasicStroke(1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND,
                 2f, new float[] { 10, 5, },0f);
         g.setStroke(dash);
-        g.setColor(Color.decode("#8DCDFE"));
+        g.setColor(indexLineColor);
         int height = timeSpans.size() * (TimeSpan.LINE_HEIGHT + TimeSpan.LINE_SPACING) + TimeSpan.MARGIN_TOP;
-        g.drawLine(40, 3, 40, height-3);
+        g.drawLine(45, 3, 45, height-3);
 
         // 关闭资源
         g.dispose();

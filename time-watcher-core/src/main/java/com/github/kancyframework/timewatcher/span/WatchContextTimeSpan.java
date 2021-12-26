@@ -34,7 +34,7 @@ public class WatchContextTimeSpan extends TimeSpan{
 
         x = (int) (((xtime - startTs) * MAX_WITH / total) + MARGIN);
         y = (LINE_HEIGHT + LINE_SPACING) * index + MARGIN_TOP;
-        with = (int) (watchRecord.getCostMillis() * MAX_WITH / total);
+        width = (int) (watchRecord.getCostMillis() * MAX_WITH / total);
         height = LINE_HEIGHT;
 
 
@@ -65,19 +65,13 @@ public class WatchContextTimeSpan extends TimeSpan{
         );
 
         // 按照长度动态适配
-        if (!hasWith(spanLabel)){
+        if (!hasWidth(spanLabel)){
             spanLabel = String.format("%sms | %s | %s",
                     watchRecord.getCostMillis(),
                     watchRecord.getThreadName(),
                     getWatchName());
-            if (!hasWith(spanLabel)){
+            if (!hasWidth(spanLabel)){
                 spanLabel = String.format("%sms | %s", watchRecord.getCostMillis(), getWatchName());
-                if (!hasWith(spanLabel)){
-                    spanLabel = String.format("%s", getWatchName());
-                    if (!hasWith(spanLabel)){
-                        spanLabel = String.format("%sms", watchRecord.getCostMillis());
-                    }
-                }
             }
         }
         return spanLabel;
@@ -91,8 +85,8 @@ public class WatchContextTimeSpan extends TimeSpan{
         return "";
     }
 
-    private boolean hasWith(String spanLabel){
-        if (getWith() > 500){
+    private boolean hasWidth(String spanLabel){
+        if (getWidth() > 500){
             return true;
         }
         int needWith = spanLabel.length() * TimeSpan.CHAR_WITH;
