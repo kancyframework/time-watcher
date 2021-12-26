@@ -6,7 +6,7 @@ package com.github.kancyframework.timewatcher.handler;
  * @author huangchengkang
  * @date 2021/12/26 11:32
  */
-public interface TaskDecorateHandler<T> {
+public interface TimeWatchTaskDecorateHandler<T> {
 
     /**
      * 名字

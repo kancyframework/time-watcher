@@ -10,7 +10,7 @@ import java.util.Map;
  * @author huangchengkang
  * @date 2021/12/26 11:32
  */
-public class MDCTaskDecorateHandler implements TaskDecorateHandler<Map<String, String>> {
+public class MDCTimeWatchTaskDecorateHandler implements TimeWatchTaskDecorateHandler<Map<String, String>> {
 
     /**
      * 名字
