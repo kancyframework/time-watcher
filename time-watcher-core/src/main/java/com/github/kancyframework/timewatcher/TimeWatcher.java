@@ -17,6 +17,11 @@ import java.util.*;
 @Slf4j
 public abstract class TimeWatcher {
 
+    static {
+        // 预热加载
+        preheatLoading(UUID::randomUUID);
+    }
+
     /**
      * 线程本地 - 统计相关
      */
@@ -190,7 +195,6 @@ public abstract class TimeWatcher {
         if (Objects.isNull(watchName) || watchName.isEmpty()){
             watchName = supplier.getWatchMethodName();
         }
-
         R result = null;
         try {
             putIfAbsentClassAndMethodName(properties, supplier);
@@ -319,6 +323,16 @@ public abstract class TimeWatcher {
                 throw e;
             }
         }
+    }
+
+    /**
+     * 预热加载
+     * @param function
+     * @param <R>
+     * @return
+     */
+    private static <R> R preheatLoading(ProducerFunction<R> function){
+        return function.get();
     }
 
     /**
