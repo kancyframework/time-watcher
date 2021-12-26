@@ -16,16 +16,15 @@ import java.util.*;
 public class SimpleWatchContext extends WatchContext{
 
     /**
-     * 重入次数
-     */
-    private int reentry;
-
-    /**
      * 观测记录栈
      */
     @JSONField(deserialize = false, serialize = false)
     private Deque<WatchRecord> watchRecordStack;
 
+    /**
+     * 重入次数
+     */
+    private int reentry;
     /**
      * 最大总耗时（毫秒）
      */
@@ -34,6 +33,10 @@ public class SimpleWatchContext extends WatchContext{
      * 每次Watch最大耗时（毫秒）
      */
     private Long maxCostMillis = -1L;
+    /**
+     * 处理失败不抛出异常
+     */
+    private boolean noThrows = true;
 
     /**
      * 启动上下文

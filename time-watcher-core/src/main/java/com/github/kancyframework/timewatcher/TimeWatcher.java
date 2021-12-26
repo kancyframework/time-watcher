@@ -62,7 +62,15 @@ public abstract class TimeWatcher {
     public static void start(String contextName){
         SimpleWatchContext watchContext = getSimpleWatchContext();
         if (Objects.isNull(watchContext.getContextId())){
-            watchContext.start(contextName);
+            try {
+                watchContext.start(contextName);
+            } catch (Exception e) {
+                if (watchContext.isNoThrows()){
+                    log.error("time watcher start fail:", e);
+                }else {
+                    throw e;
+                }
+            }
             setCallClassNameAndMethodName();
         }
     }
@@ -70,7 +78,15 @@ public abstract class TimeWatcher {
     public static void startWatch(String contextName){
         SimpleWatchContext watchContext = getSimpleWatchContext();
         if (Objects.isNull(watchContext.getContextId())){
-            watchContext.start(contextName);
+            try {
+                watchContext.start(contextName);
+            } catch (Exception e) {
+                if (watchContext.isNoThrows()){
+                    log.error("time watcher start fail:", e);
+                }else {
+                    throw e;
+                }
+            }
             setCallClassNameAndMethodName();
         }
     }
@@ -82,8 +98,18 @@ public abstract class TimeWatcher {
     public static void stopWatch(){
         SimpleWatchContext watchContext = getSimpleWatchContext();
         if (Objects.nonNull(watchContext)){
-            watchContext.stop();
+            try {
+                watchContext.stop();
+            } catch (Exception e) {
+                if (watchContext.isNoThrows()){
+                    log.error("time watcher stop fail:", e);
+                }else {
+                    throw e;
+                }
+            }
         }
+
+
     }
 
     public static void close(){
@@ -211,26 +237,32 @@ public abstract class TimeWatcher {
     }
 
     private static void preWatch(String watchName, Map<String, Object> properties) {
+        SimpleWatchContext watchContext = null;
         try {
+            watchContext = getSimpleWatchContext();
             WatchRecord watchRecord = new WatchRecord();
             watchRecord.setWatchName(watchName);
             watchRecord.setProperties(properties);
             watchRecord.startRecord();
 
-            SimpleWatchContext watchContext = getSimpleWatchContext();
             Deque<WatchRecord> watchRecordStack = watchContext.getWatchRecordStack();
             List<WatchRecord> watchRecords = watchContext.getWatchRecords();
             watchRecords.add(watchRecord);
             watchRecordStack.push(watchRecord);
         } catch (Exception e) {
-            log.error("preWatch fail: watchName={} , properties={}\n{}", watchName, properties, e);
+            if (Objects.nonNull(watchContext) && watchContext.isNoThrows()){
+                log.error("preWatch fail: watchName={} , properties={}\n{}", watchName, properties, e);
+            }else {
+                throw e;
+            }
         }
 
     }
 
     private static void postWatch(String watchName, Map<String, Object> properties) {
+        SimpleWatchContext watchContext = null;
         try {
-            SimpleWatchContext watchContext = getSimpleWatchContext();
+            watchContext = getSimpleWatchContext();
             Deque<WatchRecord> watchRecordStack = watchContext.getWatchRecordStack();
 
             // 出栈并且结束时间记录
@@ -240,7 +272,11 @@ public abstract class TimeWatcher {
             String parentWatchName = watchContext.getRootWatchRecord().getWatchName();
             currentWatchRecord.setParentWatchName(parentWatchName);
         } catch (Exception e) {
-            log.error("postWatch fail: watchName={} , properties={}\n{}", watchName, properties, e);
+            if (Objects.nonNull(watchContext) && watchContext.isNoThrows()){
+                log.error("postWatch fail: watchName={} , properties={}\n{}", watchName, properties, e);
+            }else {
+                throw e;
+            }
         }
     }
 
@@ -259,13 +295,19 @@ public abstract class TimeWatcher {
      * 设置调用者的类名和方法名称
      */
     private static void setCallClassNameAndMethodName() {
+        SimpleWatchContext watchContext = null;
         try {
-            getWatchContext().getRootWatchRecord().getProperties().put("__className__",
+            watchContext = getSimpleWatchContext();
+            watchContext.getRootWatchRecord().getProperties().put("__className__",
                     Thread.currentThread().getStackTrace()[3].getClassName());
-            getWatchContext().getRootWatchRecord().getProperties().put("__methodName__",
+            watchContext.getRootWatchRecord().getProperties().put("__methodName__",
                     Thread.currentThread().getStackTrace()[3].getMethodName());
         } catch (Exception e) {
-            log.warn("setCallClassNameAndMethodName fail : {}", e.getMessage());
+            if (Objects.nonNull(watchContext) && watchContext.isNoThrows()){
+                log.warn("setCallClassNameAndMethodName fail : {}", e.getMessage());
+            }else {
+                throw e;
+            }
         }
     }
 
