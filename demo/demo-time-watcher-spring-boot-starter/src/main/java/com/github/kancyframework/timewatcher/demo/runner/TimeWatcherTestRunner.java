@@ -1,7 +1,7 @@
 package com.github.kancyframework.timewatcher.demo.runner;
 
 import com.github.kancyframework.timewatcher.TimeWatcher;
-import com.github.kancyframework.timewatcher.annotation.TimeWatch;
+import com.github.kancyframework.timewatcher.annotation.Watcher;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 public class TimeWatcherTestRunner implements ApplicationRunner {
 
-    @TimeWatch(noThrows = false)
+    @Watcher(noThrows = false)
     @Override
     public void run(ApplicationArguments args) {
         TimeWatcher.watch("runner-test-1", this::randomSleep);

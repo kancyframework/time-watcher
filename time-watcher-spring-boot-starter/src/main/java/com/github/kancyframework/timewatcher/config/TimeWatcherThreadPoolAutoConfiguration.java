@@ -1,5 +1,7 @@
 package com.github.kancyframework.timewatcher.config;
 
+import com.github.kancyframework.timewatcher.handler.MDCTaskDecorateHandler;
+import com.github.kancyframework.timewatcher.handler.TaskDecorateHandler;
 import com.github.kancyframework.timewatcher.properties.ThreadPoolConfig;
 import com.github.kancyframework.timewatcher.properties.TimeWatchProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +16,11 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.RejectedExecutionHandler;
+import java.util.stream.Collectors;
 
 /**
  * TimeWatcherThreadPoolConfig
@@ -29,15 +34,24 @@ import java.util.concurrent.RejectedExecutionHandler;
 public class TimeWatcherThreadPoolAutoConfiguration {
 
     @Autowired(required = false)
-    private TimeWatchProperties timeWatchProperties;
+    private TimeWatchProperties timeWatchProperties = new TimeWatchProperties();
+
+    @Autowired(required = false)
+    private List<TaskDecorateHandler> taskDecorateHandlers = new ArrayList<>();
 
     @Autowired
     private ApplicationContext applicationContext;
 
+
+    @Bean
+    public MDCTaskDecorateHandler mdcTaskDecorateHandler() {
+        return new MDCTaskDecorateHandler();
+    }
+
     @Bean(name = "timeWatcherExecutor")
     public TaskExecutor timeWatcherExecutor() {
         TimeWatchProperties properties = timeWatchProperties;
-        if (Objects.isNull(properties)){
+        if (Objects.isNull(properties)) {
             properties = new TimeWatchProperties();
         }
 
@@ -47,28 +61,63 @@ public class TimeWatcherThreadPoolAutoConfiguration {
         executor.setMaxPoolSize(taskProperties.getMaxPoolSize());
         executor.setQueueCapacity(taskProperties.getQueueCapacity());
         executor.setThreadNamePrefix(taskProperties.getThreadNamePrefix());
+        executor.setKeepAliveSeconds(taskProperties.getKeepAliveSeconds());
 
-        TaskDecorator taskDecorator = findTaskDecorator(taskProperties.getTaskDecoratorBeanName());
-        if (Objects.nonNull(taskDecorator)){
-            executor.setTaskDecorator(taskDecorator);
-        }
+        // TaskDecorator
+        executor.setTaskDecorator(getTaskDecorator(taskProperties));
+        // RejectedExecutionHandler
+        executor.setRejectedExecutionHandler(getRejectedExecutionHandler(taskProperties));
 
-        RejectedExecutionHandler rejectedExecutionHandler =
-                findRejectedHandler(taskProperties.getRejectedHandlerBeanName());
-        if (Objects.nonNull(taskDecorator)){
-            executor.setRejectedExecutionHandler(rejectedExecutionHandler);
-        }else {
-            executor.setRejectedExecutionHandler((r, pool) ->
-                    log.warn("timeWatcherExecutor 任务挤压太多了，当前任务数：{}，异常队列容量：{}",
-                        pool.getTaskCount(), taskProperties.getQueueCapacity()));
-        }
         executor.setWaitForTasksToCompleteOnShutdown(true);
-        executor.initialize();
         return executor;
     }
 
+    private RejectedExecutionHandler getRejectedExecutionHandler(ThreadPoolConfig taskProperties) {
+        RejectedExecutionHandler rejectedExecutionHandler =
+                findRejectedHandler(taskProperties.getRejectedHandlerBeanName());
+        if (Objects.nonNull(rejectedExecutionHandler)) {
+            return rejectedExecutionHandler;
+        } else {
+            return (runnable, pool) ->
+                    log.warn("timeWatcherExecutor 任务挤压太多了，被丢弃，当前任务数：{}，最大队列容量：{}",
+                            pool.getActiveCount(), taskProperties.getQueueCapacity());
+        }
+    }
+
+    private TaskDecorator getTaskDecorator(ThreadPoolConfig taskProperties) {
+        TaskDecorator taskDecorator = findTaskDecorator(taskProperties.getTaskDecoratorBeanName());
+        if (Objects.nonNull(taskDecorator)) {
+            return taskDecorator;
+        } else {
+            return runnable -> {
+                List<TaskDecorateHandler> handlers = taskDecorateHandlers
+                        .stream()
+                        .filter(h -> taskProperties.getDecorateHandlers().getOrDefault(h.name(), true))
+                        .collect(Collectors.toList());
+                List<Object> contexts = handlers.stream()
+                        .map(TaskDecorateHandler::copyOfContext)
+                        .collect(Collectors.toList());
+
+                return () -> {
+                    try {
+                        for (int i = 0; i < handlers.size(); i++) {
+                            TaskDecorateHandler<Object> taskDecorateHandler = handlers.get(i);
+                            Object context = contexts.get(i);
+                            if (Objects.nonNull(context)){
+                                taskDecorateHandler.decorate(contexts.get(i));
+                            }
+                        }
+                        runnable.run();
+                    } finally {
+                        handlers.forEach(TaskDecorateHandler::clear);
+                    }
+                };
+            };
+        }
+    }
+
     private RejectedExecutionHandler findRejectedHandler(String beanName) {
-        if (!StringUtils.hasText(beanName)){
+        if (!StringUtils.hasText(beanName)) {
             return null;
         }
         try {
@@ -79,7 +128,7 @@ public class TimeWatcherThreadPoolAutoConfiguration {
     }
 
     private TaskDecorator findTaskDecorator(String beanName) {
-        if (!StringUtils.hasText(beanName)){
+        if (!StringUtils.hasText(beanName)) {
             return null;
         }
         try {

@@ -3,7 +3,6 @@ package com.github.kancyframework.timewatcher.aspect;
 import com.github.kancyframework.timewatcher.SimpleWatchContext;
 import com.github.kancyframework.timewatcher.TimeWatcher;
 import com.github.kancyframework.timewatcher.WatchContext;
-import com.github.kancyframework.timewatcher.annotation.TimeWatch;
 import com.github.kancyframework.timewatcher.event.TimeWatchResultEvent;
 import com.github.kancyframework.timewatcher.event.TimeWatchStartedEvent;
 import com.github.kancyframework.timewatcher.event.TimeWatchStoppedEvent;
@@ -17,6 +16,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -46,7 +46,9 @@ public class TimeWatchAspect {
     /**
      * 切点
      */
-    @Pointcut("@annotation(com.github.kancyframework.timewatcher.annotation.TimeWatch)")
+    @Pointcut("@annotation(com.github.kancyframework.timewatcher.annotation.TimeWatcher) || " +
+              "@annotation(com.github.kancyframework.timewatcher.annotation.Watcher) || " +
+              "@annotation(com.github.kancyframework.timewatcher.annotation.TimeWatch)")
     public void timeWatchPointCut() {
         // doNothing
     }
@@ -77,7 +79,8 @@ public class TimeWatchAspect {
 
     private void timeWatchReturn(ProceedingJoinPoint joinPoint, Throwable throwable) {
         Method currentMethod = getCurrentMethod(joinPoint);
-        TimeWatch annotation = currentMethod.getAnnotation(TimeWatch.class);
+        com.github.kancyframework.timewatcher.annotation.TimeWatcher annotation
+                = AnnotationUtils.findAnnotation(currentMethod, com.github.kancyframework.timewatcher.annotation.TimeWatcher.class);
         if (!annotation.enabled()){
             return;
         }
@@ -115,7 +118,8 @@ public class TimeWatchAspect {
     public boolean timeWatchBefore(JoinPoint joinPoint) {
         Method currentMethod = getCurrentMethod(joinPoint);
 
-        TimeWatch annotation = currentMethod.getAnnotation(TimeWatch.class);
+        com.github.kancyframework.timewatcher.annotation.TimeWatcher annotation
+                = AnnotationUtils.findAnnotation(currentMethod, com.github.kancyframework.timewatcher.annotation.TimeWatcher.class);
         if (!annotation.enabled()){
             return false;
         }

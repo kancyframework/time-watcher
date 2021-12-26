@@ -4,6 +4,7 @@ import com.github.kancyframework.timewatcher.event.TimeWatchResultEvent;
 import com.github.kancyframework.timewatcher.handler.TimeWatchResultHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * ApiTimeWatchResultHandler
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
  * @date 2021/12/26 2:52
  */
 @Slf4j
+@Service
 @Component
 public class ApiTimeWatchResultHandler implements TimeWatchResultHandler {
     /**
@@ -32,6 +34,11 @@ public class ApiTimeWatchResultHandler implements TimeWatchResultHandler {
      */
     @Override
     public void handle(TimeWatchResultEvent result) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         result.getWatchContext().save();
         log.info("save 成功：{}", result.getContextId());
     }

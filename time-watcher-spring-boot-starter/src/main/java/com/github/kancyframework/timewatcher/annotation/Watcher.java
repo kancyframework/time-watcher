@@ -11,12 +11,11 @@ import java.lang.annotation.*;
  * @author huangchengkang
  * @date 2021/12/25 1:15
  */
-@Deprecated
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @TimeWatcher
-public @interface TimeWatch {
+public @interface Watcher {
 
     /**
      * watch上下文名称

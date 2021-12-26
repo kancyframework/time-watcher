@@ -2,6 +2,7 @@ package com.github.kancyframework.timewatcher.demo.controller;
 
 import com.github.kancyframework.timewatcher.TimeWatcher;
 import com.github.kancyframework.timewatcher.annotation.TimeWatch;
+import com.github.kancyframework.timewatcher.annotation.Watcher;
 import com.github.kancyframework.timewatcher.demo.service.DemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ public class TimeWatcherTestController {
     @Autowired
     private DemoService demoService;
 
-    @TimeWatch
+    @Watcher
     @GetMapping("/index")
     public Object index() throws Exception {
         TimeWatcher.watch("controller-test-1", this::randomSleep);
