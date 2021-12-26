@@ -36,8 +36,6 @@ public class WatchContextTimeSpan extends TimeSpan{
         y = (LINE_HEIGHT + LINE_SPACING) * index + MARGIN_TOP;
         width = (int) (watchRecord.getCostMillis() * MAX_WITH / total);
         height = LINE_HEIGHT;
-
-
     }
 
     @Override
@@ -53,6 +51,15 @@ public class WatchContextTimeSpan extends TimeSpan{
         return threadColor;
     }
 
+    private String getThreadName(){
+        String threadName = watchRecord.getThreadName();
+        if (threadName.startsWith("http-nio-") && threadName.contains("-exec-")){
+            String[] strings = threadName.split("-");
+            return String.format("%s-exec-%s", strings[0], strings[strings.length-1]);
+        }
+        return threadName;
+    }
+
     @Override
     public String getSpanLabel(){
         if (isFirst()){
@@ -60,7 +67,7 @@ public class WatchContextTimeSpan extends TimeSpan{
         }
         String spanLabel = String.format("%sms | %s | %s",
                 watchRecord.getCostMillis(),
-                watchRecord.getThreadName(),
+                getThreadName(),
                 getWatchNameLabel()
         );
 
@@ -68,7 +75,7 @@ public class WatchContextTimeSpan extends TimeSpan{
         if (!hasWidth(spanLabel)){
             spanLabel = String.format("%sms | %s | %s",
                     watchRecord.getCostMillis(),
-                    watchRecord.getThreadName(),
+                    getThreadName(),
                     getWatchName());
             if (!hasWidth(spanLabel)){
                 spanLabel = String.format("%sms | %s", watchRecord.getCostMillis(), getWatchName());
@@ -136,7 +143,7 @@ public class WatchContextTimeSpan extends TimeSpan{
     private String getRootSpanLabel() {
         return String.format("%sms | %s | %s%s%s",
                 watchRecord.getCostMillis(),
-                watchRecord.getThreadName(),
+                getThreadName(),
                 watchContext.getContextName(),
                 getClassAndMethodLabel(),
                 getTraceIdLabel()
@@ -147,7 +154,7 @@ public class WatchContextTimeSpan extends TimeSpan{
         if (Objects.isNull(watchContext.getTraceId())){
             return String.format(" ( id:%s )", watchContext.getContextId());
         }
-        return String.format(" ( id:%s , traceId:%s )", watchContext.getContextId(), watchContext.getTraceId());
+        return String.format(" ( traceId:%s )", watchContext.getTraceId());
     }
 
     private String getClassAndMethodLabel(){

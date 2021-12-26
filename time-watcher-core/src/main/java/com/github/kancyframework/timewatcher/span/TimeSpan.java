@@ -25,7 +25,7 @@ public abstract class TimeSpan {
 
     public static final int MARGIN = 60;
     public static final int MARGIN_TOP = 10;
-    public static final int CHAR_WITH = 8;
+    public static final int CHAR_WITH = 7;
 
     protected int x;
     protected int y;
