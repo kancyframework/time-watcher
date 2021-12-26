@@ -2,7 +2,6 @@ package com.github.kancyframework.timewatcher;
 
 import com.alibaba.fastjson.JSON;
 import org.junit.Test;
-import org.slf4j.MDC;
 
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
@@ -31,7 +30,7 @@ public class TimeWatcherTests {
         TimeWatcher.stopWatch();
 
         System.out.println(JSON.toJSONString(TimeWatcher.getWatchContext(), true));
-        TimeWatcher.showGui();
+        TimeWatcher.showGuiReport();
         TimeWatcher.close();
     }
 
@@ -58,7 +57,7 @@ public class TimeWatcherTests {
 
         TimeWatcher.stopWatch();
         System.out.println(JSON.toJSONString(TimeWatcher.getWatchContext()));
-        TimeWatcher.showGui();
+        TimeWatcher.showGuiReport();
 
     }
 

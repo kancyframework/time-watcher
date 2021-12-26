@@ -314,28 +314,28 @@ public abstract class TimeWatcher {
     /**
      * 以Gui形式显示
      */
-    public static void showGui(){
+    public static void showGuiReport(){
         WatchContext watchContext = getWatchContext();
         watchContext.show();
     }
     /**
      * 将耗时统计分析结果,以png图片形式保存
      */
-    public static void save2Image(){
+    public static void saveImageReport(){
         WatchContext watchContext = getWatchContext();
         watchContext.save();
     }
     /**
      * 将耗时统计分析结果,以png图片形式保存
      */
-    public static void save2Image(String filePath){
+    public static void saveImageReport(String filePath){
         WatchContext watchContext = getWatchContext();
         watchContext.save(filePath);
     }
     /**
      * 将耗时统计分析结果,以png图片形式保存
      */
-    public static void save2Image(File file){
+    public static void saveImageReport(File file){
         WatchContext watchContext = getWatchContext();
         watchContext.save(file);
     }
