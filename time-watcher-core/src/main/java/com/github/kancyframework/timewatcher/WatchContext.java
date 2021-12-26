@@ -89,6 +89,17 @@ public abstract class WatchContext {
         }
     }
 
+    /**
+     * 显示gui报告
+     * @see this.showReport()
+     */
+    public void showGuiReport(){
+        showReport();
+    }
+
+    /**
+     * 显示gui报告
+     */
     public void showReport(){
         if (isEnabled() && isStopped()){
             try {
@@ -103,6 +114,15 @@ public abstract class WatchContext {
         } else {
             log.info("WatchContext did not enabled or stop ， please call stop()");
         }
+    }
+
+    /**
+     * 获取png格式图片报告的字节数据
+     * @return
+     */
+    public byte[] getReportBytes(){
+        TimeSpanImage timeSpanImage = TimeSpanImage.create(this);
+        return timeSpanImage.getImageBytes();
     }
 
     public void saveReport(){
