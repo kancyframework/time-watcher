@@ -14,13 +14,13 @@ import java.util.List;
  */
 public class TimeSpaner {
 
-    public static List<TimeSpan> getTimeSpans(WatchContext context){
+    public static List<TimeSpan> getTimeSpans(WatchContext context) {
         List<WatchRecord> watchRecords = context.getWatchRecords();
         List<TimeSpan> timeSpans = new ArrayList<>(watchRecords.size());
-        timeSpans.add(new TimeSpan(context, context.getRootWatchRecord(), 0));
+        timeSpans.add(new WatchContextTimeSpan(0, context.getRootWatchRecord(), context));
         for (int i = 0; i < watchRecords.size(); i++) {
             WatchRecord watchRecord = watchRecords.get(i);
-            timeSpans.add(new TimeSpan(context, watchRecord, i+1));
+            timeSpans.add(new WatchContextTimeSpan(i + 1, watchRecord, context));
         }
         return timeSpans;
     }
