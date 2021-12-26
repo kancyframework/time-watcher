@@ -39,7 +39,7 @@ public class ApiTimeWatchResultHandler implements TimeWatchResultHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        result.getWatchContext().save();
+        result.getWatchContext().saveReport();
         log.info("save 成功：{}", result.getContextId());
     }
 }

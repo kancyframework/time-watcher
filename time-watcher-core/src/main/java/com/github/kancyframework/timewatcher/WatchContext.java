@@ -89,7 +89,7 @@ public abstract class WatchContext {
         }
     }
 
-    public void show(){
+    public void showReport(){
         if (isEnabled() && isStopped()){
             try {
                 TimeSpanFrame.show(this);
@@ -105,15 +105,15 @@ public abstract class WatchContext {
         }
     }
 
-    public void save(){
-        save(String.format("%s.png", getContextId()));
+    public void saveReport(){
+        saveReport(String.format("%s.png", getContextId()));
     }
 
-    public void save(String filePath){
-        save(new File(filePath));
+    public void saveReport(String filePath){
+        saveReport(new File(filePath));
     }
 
-    public void save(File file){
+    public void saveReport(File file){
         if (isEnabled() && isStopped()){
             TimeSpanImage timeSpanImage = TimeSpanImage.create(this);
             timeSpanImage.save(file);
