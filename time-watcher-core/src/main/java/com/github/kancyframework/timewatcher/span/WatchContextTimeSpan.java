@@ -174,4 +174,8 @@ public class WatchContextTimeSpan extends TimeSpan{
         }
         return "";
     }
+
+    public String getFileName(){
+        return String.format("耗时分析报告_%s.png", watchContext.getContextId());
+    }
 }

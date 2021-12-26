@@ -3,7 +3,11 @@ package com.github.kancyframework.timewatcher.utils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -53,5 +57,34 @@ public class ImageUtils {
         }
     }
 
+    /**
+     * 复制图片到剪切板。
+     */
+    public static void setClipboardImage(final byte[] imageBytes) {
+        setClipboardImage(new ImageIcon(imageBytes).getImage());
+    }
+
+    /**
+     * 复制图片到剪切板。
+     */
+    public static void setClipboardImage(final Image image) {
+        Transferable trans = new Transferable() {
+            public DataFlavor[] getTransferDataFlavors() {
+                return new DataFlavor[]{DataFlavor.imageFlavor};
+            }
+
+            public boolean isDataFlavorSupported(DataFlavor flavor) {
+                return DataFlavor.imageFlavor.equals(flavor);
+            }
+
+            public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
+                if (isDataFlavorSupported(flavor))
+                    return image;
+                throw new UnsupportedFlavorException(flavor);
+            }
+
+        };
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trans, null);
+    }
 
 }

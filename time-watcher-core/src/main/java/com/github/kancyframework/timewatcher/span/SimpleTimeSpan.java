@@ -1,5 +1,7 @@
 package com.github.kancyframework.timewatcher.span;
 
+import java.util.UUID;
+
 /**
  * SimpleTimeSpan
  *
@@ -19,5 +21,9 @@ public class SimpleTimeSpan extends TimeSpan{
     @Override
     public String getRootSpanTimeLabel() {
         return "";
+    }
+
+    public String getFileName(){
+        return String.format("耗时分析报告_%s.png", UUID.randomUUID().toString());
     }
 }
