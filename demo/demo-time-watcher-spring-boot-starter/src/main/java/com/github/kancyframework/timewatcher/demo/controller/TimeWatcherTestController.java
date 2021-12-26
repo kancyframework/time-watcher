@@ -23,6 +23,7 @@ public class TimeWatcherTestController {
     @Autowired
     private DemoService demoService;
 
+
     @Test
     @Watcher
     @GetMapping("/index")
@@ -32,6 +33,16 @@ public class TimeWatcherTestController {
         demoService.index();
         TimeWatcher.watch("controller-test-3", this::randomSleep);
         return "index";
+    }
+
+    @Test
+    @Watcher(name = "hello", maxCostMillis = 9)
+    @GetMapping("/hello")
+    public Object hello() throws Exception {
+        TimeWatcher.watch("controller-test-1", this::randomSleep);
+        TimeWatcher.watch("controller-test-2", ()->sleep(10));
+        TimeWatcher.watch("controller-test-3", this::randomSleep);
+        return "hello";
     }
 
     private void randomSleep() {

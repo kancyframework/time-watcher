@@ -20,6 +20,13 @@
       "defaultValue": true
     },
     {
+      "name": "timewatcher.enabled",
+      "type": "java.lang.Boolean",
+      "description": "全局:不抛出异常",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue": true
+    },
+    {
       "name": "timewatcher.max-cost-millis",
       "type": "java.lang.Long",
       "description": "全局:每次Watch最大耗时（毫秒）",
@@ -110,6 +117,13 @@
       "name": "timewatcher.watchers.{watch-name}.enabled",
       "type": "java.lang.Boolean",
       "description": "具体watcher功能开关",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.WatcherConfig",
+      "defaultValue": true
+    },
+    {
+      "name": "timewatcher.watchers.{watch-name}.no-throws",
+      "type": "java.lang.Boolean",
+      "description": "不抛出异常",
       "sourceType": "com.github.kancyframework.timewatcher.properties.WatcherConfig",
       "defaultValue": true
     },

@@ -25,6 +25,10 @@ public class WatcherConfig{
      */
     private Long maxCostMillis = -1L;
     /**
+     * 不抛出异常
+     */
+    private boolean noThrows = true;
+    /**
      * 备注
      */
     private String description;

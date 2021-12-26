@@ -20,7 +20,7 @@ public @interface TimeWatcher {
      * watch上下文名称
      * @return
      */
-    @AliasFor("context")
+    @AliasFor("name")
     String value() default "";
 
     /**
@@ -28,7 +28,7 @@ public @interface TimeWatcher {
      * @return
      */
     @AliasFor("value")
-    String context() default "";
+    String name() default "";
 
     /**
      * 是否启用

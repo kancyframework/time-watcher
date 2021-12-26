@@ -35,6 +35,10 @@ public class TimeWatchProperties {
      */
     private Long maxCostMillis = -1L;
     /**
+     * 全局:不抛出异常
+     */
+    private boolean noThrows = true;
+    /**
      * 全局:扩展属性
      */
     private Map<String, Object> properties = new HashMap<>();

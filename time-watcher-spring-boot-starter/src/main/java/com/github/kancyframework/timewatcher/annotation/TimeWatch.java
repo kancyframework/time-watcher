@@ -29,7 +29,7 @@ public @interface TimeWatch {
      * watch上下文名称
      * @return
      */
-    @AliasFor(annotation = TimeWatcher.class)
+    @AliasFor(annotation = TimeWatcher.class, attribute = "name")
     String context() default "";
 
     /**

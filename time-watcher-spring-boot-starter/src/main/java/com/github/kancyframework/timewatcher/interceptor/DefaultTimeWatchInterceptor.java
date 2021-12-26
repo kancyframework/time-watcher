@@ -85,7 +85,7 @@ public class DefaultTimeWatchInterceptor extends AbstractTimeWatchInterceptor {
                     SimpleWatchContext simpleWatchContext = (SimpleWatchContext) context;
                     Long maxTotalCostMillis = simpleWatchContext.getMaxTotalCostMillis();
                     Long maxCostMillis = simpleWatchContext.getMaxCostMillis();
-
+                    simpleWatchContext.setNoThrows(simpleWatchContext.isNoThrows());
                     if (Objects.isNull(maxTotalCostMillis) || maxTotalCostMillis < 0){
                         simpleWatchContext.setMaxTotalCostMillis(watcherConfig.getMaxTotalCostMillis());
                     }

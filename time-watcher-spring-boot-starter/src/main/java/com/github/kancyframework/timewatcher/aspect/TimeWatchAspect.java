@@ -7,6 +7,7 @@ import com.github.kancyframework.timewatcher.event.TimeWatchResultEvent;
 import com.github.kancyframework.timewatcher.event.TimeWatchStartedEvent;
 import com.github.kancyframework.timewatcher.event.TimeWatchStoppedEvent;
 import com.github.kancyframework.timewatcher.interceptor.TimeWatchInterceptor;
+import com.github.kancyframework.timewatcher.properties.TimeWatchProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,7 +18,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -43,6 +44,9 @@ public class TimeWatchAspect implements Ordered {
 
     @Autowired(required = false)
     private List<TimeWatchInterceptor> timeWatchInterceptors = Collections.emptyList();
+
+    @Autowired
+    private TimeWatchProperties timeWatchProperties;
 
     /**
      * 切点
@@ -81,8 +85,10 @@ public class TimeWatchAspect implements Ordered {
     private void timeWatchReturn(ProceedingJoinPoint joinPoint, Throwable throwable) {
         Method currentMethod = getCurrentMethod(joinPoint);
         com.github.kancyframework.timewatcher.annotation.TimeWatcher annotation
-                = AnnotationUtils.findAnnotation(currentMethod, com.github.kancyframework.timewatcher.annotation.TimeWatcher.class);
-        if (!annotation.enabled()){
+                = AnnotatedElementUtils.findMergedAnnotation(currentMethod,
+                com.github.kancyframework.timewatcher.annotation.TimeWatcher.class);
+
+        if (Objects.isNull(annotation) || !annotation.enabled()){
             return;
         }
 
@@ -120,8 +126,10 @@ public class TimeWatchAspect implements Ordered {
         Method currentMethod = getCurrentMethod(joinPoint);
 
         com.github.kancyframework.timewatcher.annotation.TimeWatcher annotation
-                = AnnotationUtils.findAnnotation(currentMethod, com.github.kancyframework.timewatcher.annotation.TimeWatcher.class);
-        if (!annotation.enabled()){
+                = AnnotatedElementUtils.findMergedAnnotation(currentMethod,
+                com.github.kancyframework.timewatcher.annotation.TimeWatcher.class);
+
+        if (Objects.isNull(annotation) || !annotation.enabled()){
             return false;
         }
 
@@ -140,22 +148,23 @@ public class TimeWatchAspect implements Ordered {
             }
         }
 
-        // 启用时设置注解的属性
-        if (watchContext instanceof SimpleWatchContext){
-            SimpleWatchContext simpleWatchContext = (SimpleWatchContext) watchContext;
-            simpleWatchContext.setMaxTotalCostMillis(annotation.maxTotalCostMillis());
-            simpleWatchContext.setMaxCostMillis(annotation.maxCostMillis());
-        }
-
         try {
             TimeWatcher.enabled();
-            TimeWatcher.start(getWatchContextName(currentMethod, annotation.context()));
+            TimeWatcher.start(getWatchContextName(currentMethod, annotation.value()));
 
             // 设置私有属性
             watchContext.putContextProperty("__root__", true);
             watchContext.putContextProperty("__className__", currentMethod.getDeclaringClass().getName());
             watchContext.putContextProperty("__methodName__", currentMethod.getName());
             watchContext.putContextProperty("__methodParameterCount__", currentMethod.getParameterCount());
+
+            // 启用时设置注解的属性
+            if (watchContext instanceof SimpleWatchContext){
+                SimpleWatchContext simpleWatchContext = (SimpleWatchContext) watchContext;
+                simpleWatchContext.setMaxTotalCostMillis(annotation.maxTotalCostMillis());
+                simpleWatchContext.setMaxCostMillis(annotation.maxCostMillis());
+                simpleWatchContext.setNoThrows(annotation.noThrows());
+            }
 
             // 前置处理
             for (TimeWatchInterceptor timeWatchInterceptor : timeWatchInterceptors) {
