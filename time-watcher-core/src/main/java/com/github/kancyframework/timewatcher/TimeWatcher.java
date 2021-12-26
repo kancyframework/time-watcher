@@ -177,7 +177,9 @@ public abstract class TimeWatcher {
     public static <R> R watch(String watchName, ProducerFunction<R> supplier){
         return watch(watchName, supplier, new HashMap<>());
     }
-
+    public static <R> R watch(String watchName,  Map<String, Object> properties, ProducerFunction<R> supplier){
+        return watch(watchName, supplier, properties);
+    }
     public static <R> R watch(String watchName, ProducerFunction<R> supplier,
                               Map<String, Object> properties){
         SimpleWatchContext watchContext = getSimpleWatchContext();
@@ -208,6 +210,10 @@ public abstract class TimeWatcher {
         watch(watchName, consumer, new HashMap<>());
     }
 
+    public static void watch(String watchName,  Map<String, Object> properties, ConsumerFunction<WatchContext> consumer){
+        watch(watchName, consumer, properties);
+    }
+
     public static void watch(String watchName, ConsumerFunction<WatchContext> consumer,
                               Map<String, Object> properties){
         watchName = Objects.isNull(watchName) || watchName.isEmpty() ? consumer.getWatchMethodName() : watchName;
@@ -224,6 +230,10 @@ public abstract class TimeWatcher {
 
     public static void watch(String watchName,Function function){
         watch(watchName, function, new HashMap<>());
+    }
+
+    public static void watch(String watchName,  Map<String, Object> properties, Function function){
+        watch(watchName, function, properties);
     }
 
     public static void watch(String watchName, Function function,

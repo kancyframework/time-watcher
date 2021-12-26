@@ -2,6 +2,7 @@ package com.github.kancyframework.timewatcher.span;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.AttributedString;
 import java.util.List;
 
 /**
@@ -25,29 +26,24 @@ public class TimeSpanPanel extends JPanel {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        // 序号字体: 黑体
-        Font font1 = new Font("黑体", Font.BOLD, 12);
-        // 标签字体: 宋体,Bernard MT
-        Font font2 = new Font("宋体", Font.PLAIN, 12);
-
         for (TimeSpan timeSpan : timeSpans) {
             // span序号
-            g.setFont(font1);
-            g.setColor(Color.GRAY);
-            g.drawString(timeSpan.getIndexLabel(), 5, timeSpan.getY()+ TimeSpan.LINE_CENTER);
+            AttributedString indexLabelAttributedString = timeSpan.getIndexLabelAttributedString();
+            g.drawString(indexLabelAttributedString.getIterator(), 5, timeSpan.getY()+ TimeSpan.LINE_CENTER);
 
             // 画span
-            g.setColor(Color.decode("#87CEFA"));
+            g.setColor(timeSpan.getSpanColor());
             g.fillRect(timeSpan.getX(), timeSpan.getY(), timeSpan.getWith(), timeSpan.getHeight());
 
             // 画span标签
-            g.setFont(font2);
-            g.setColor(Color.GRAY);
-            g.drawString(timeSpan.getSpanLabel(), timeSpan.getX() + 5, timeSpan.getY()+ TimeSpan.LINE_CENTER);
+            AttributedString spanLabelAttributedString = timeSpan.getSpanLabelAttributedString();
+            g.drawString(spanLabelAttributedString.getIterator(),
+                    timeSpan.getX() + 5, timeSpan.getY()+ TimeSpan.LINE_CENTER);
 
             if (timeSpan.isFirst()){
-                String rootSpanTimeLabel = timeSpan.getRootSpanTimeLabel();
-                g.drawString(rootSpanTimeLabel, timeSpan.getX() + TimeSpan.MAX_WITH - 300, timeSpan.getY()+ TimeSpan.LINE_CENTER);
+                AttributedString rootSpanTimeLabelAttributedString = timeSpan.getRootSpanTimeLabelAttributedString();
+                g.drawString(rootSpanTimeLabelAttributedString.getIterator(),
+                        timeSpan.getX() + TimeSpan.MAX_WITH - 355, timeSpan.getY()+ TimeSpan.LINE_CENTER);
             }
         }
 
@@ -61,5 +57,4 @@ public class TimeSpanPanel extends JPanel {
         // 关闭资源
         g.dispose();
     }
-
 }

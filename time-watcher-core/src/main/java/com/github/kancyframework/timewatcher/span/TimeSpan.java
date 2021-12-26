@@ -1,5 +1,8 @@
 package com.github.kancyframework.timewatcher.span;
 
+import java.awt.*;
+import java.awt.font.TextAttribute;
+import java.text.AttributedString;
 import java.util.Objects;
 
 /**
@@ -10,6 +13,11 @@ import java.util.Objects;
  */
 public abstract class TimeSpan {
 
+    private static Font font1 = new Font("黑体", Font.BOLD, 12);
+    private static Font font2 = new Font("宋体", Font.PLAIN, 12);
+
+    private static Color skyBlueColor = Color.decode("#87CDFE");
+
     public static final int MAX_WITH = 1500;
     public static final int LINE_HEIGHT = 26;
     public static final int LINE_SPACING = 5;
@@ -17,6 +25,7 @@ public abstract class TimeSpan {
 
     public static final int MARGIN = 50;
     public static final int MARGIN_TOP = 10;
+    public static final int CHAR_WITH = 8;
 
     protected int x;
     protected int y;
@@ -24,8 +33,14 @@ public abstract class TimeSpan {
     protected int height;
     protected final int index;
 
+
+
     public TimeSpan(int index) {
         this.index = index;
+    }
+
+    public Color getSpanColor(){
+        return skyBlueColor;
     }
 
     public String getIndexLabel(){
@@ -35,9 +50,31 @@ public abstract class TimeSpan {
         return String.format("[%d]", index);
     }
 
+    public AttributedString getIndexLabelAttributedString(){
+        AttributedString as = new AttributedString(getIndexLabel());
+        as.addAttribute(TextAttribute.FONT, font1);
+        as.addAttribute(TextAttribute.FOREGROUND, Color.GRAY);
+        return as;
+    }
+
+
     public abstract String getSpanLabel();
 
+    public AttributedString getSpanLabelAttributedString(){
+        AttributedString as = new AttributedString(getSpanLabel());
+        as.addAttribute(TextAttribute.FONT, font2);
+        as.addAttribute(TextAttribute.FOREGROUND, Color.GRAY);
+        return as;
+    }
+
     public abstract String getRootSpanTimeLabel();
+
+    public AttributedString getRootSpanTimeLabelAttributedString(){
+        AttributedString as = new AttributedString(getRootSpanTimeLabel());
+        as.addAttribute(TextAttribute.FONT, font2);
+        as.addAttribute(TextAttribute.FOREGROUND, Color.GRAY);
+        return as;
+    }
 
     public boolean isFirst(){
         return Objects.equals(index, 0);
