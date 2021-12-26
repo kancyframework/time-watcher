@@ -110,7 +110,7 @@ public class WatchContextTimeSpan extends TimeSpan{
             return getWatchName();
         }else {
             String classSimpleName = getClassSimpleName(className.toString());
-            return String.format("%s.%s", classSimpleName, getWatchName());
+            return String.format("%s.%s", classSimpleName, watchRecord.getWatchName());
         }
     }
 
