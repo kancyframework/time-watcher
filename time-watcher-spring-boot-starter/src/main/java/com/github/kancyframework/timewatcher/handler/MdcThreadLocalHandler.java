@@ -5,12 +5,12 @@ import org.slf4j.MDC;
 import java.util.Map;
 
 /**
- * TaskDecoratorHandler
+ * MdcThreadLocalHandler
  *
  * @author huangchengkang
  * @date 2021/12/26 11:32
  */
-public class MDCTimeWatchThreadLocalHandler implements TimeWatchThreadLocalHandler<Map<String, String>> {
+public class MdcThreadLocalHandler implements ThreadLocalHandler<Map<String, String>> {
 
     /**
      * 名字

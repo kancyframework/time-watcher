@@ -1,12 +1,12 @@
 package com.github.kancyframework.timewatcher.handler;
 
 /**
- * TimeWatchThreadLocalHandler
+ * ThreadLocalHandler
  *
  * @author huangchengkang
  * @date 2021/12/26 11:32
  */
-public interface TimeWatchThreadLocalHandler<T> {
+public interface ThreadLocalHandler<T> {
 
     /**
      * 名字
