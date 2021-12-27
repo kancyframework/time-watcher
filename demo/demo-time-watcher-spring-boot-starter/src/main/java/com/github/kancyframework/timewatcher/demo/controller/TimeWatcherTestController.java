@@ -22,8 +22,6 @@ public class TimeWatcherTestController {
     @Autowired
     private DemoService demoService;
 
-
-    @Test
     @Watcher
     @GetMapping("/index")
     public Object index() throws Exception {

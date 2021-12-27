@@ -135,9 +135,6 @@ public abstract class AbstractTimeWatchInterceptor implements TimeWatchIntercept
      * @return
      */
     protected WatcherConfig findWatcherConfig(String contextName, Method interceptMethod) {
-
-
-
         WatcherConfig watcherConfig = new WatcherConfig();
         TimeWatcher annotation = AnnotatedElementUtils.findMergedAnnotation(interceptMethod, TimeWatcher.class);
         watcherConfig.setEnabled(annotation.enabled());
@@ -191,8 +188,9 @@ public abstract class AbstractTimeWatchInterceptor implements TimeWatchIntercept
 
     protected String getWatcherConfigKey(String contextName){
         String watcherConfigKey = contextName;
-        if (contextName.startsWith("url:") && contextName.contains("/")){
-            watcherConfigKey =  contextName.replace("/", "-");
+        if (contextName.startsWith("url:/")){
+            watcherConfigKey =  contextName.replace("url:","url")
+                    .replace("/", "-");
             return watcherConfigKey;
         }
         return watcherConfigKey;

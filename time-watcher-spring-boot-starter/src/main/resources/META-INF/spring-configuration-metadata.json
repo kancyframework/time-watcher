@@ -89,10 +89,24 @@
     },
     {
       "name" : "timewatcher.jdbc-template-bean-name",
-      "type" : "java.lang.Boolean",
+      "type" : "java.lang.String",
       "description" : "jdbcTemplate beanName",
       "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
       "defaultValue" : "timewatcherJdbcTemplate"
+    },
+    {
+      "name" : "timewatcher.jdbc-report-table-name",
+      "type" : "java.lang.String",
+      "description" : "jdbc报告的表名",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue" : "timewatcher_report"
+    },
+    {
+      "name" : "timewatcher.jdbc-report-info-table-name",
+      "type" : "java.lang.String",
+      "description" : "jdbc报告明细的表名",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue" : "timewatcher_report_info"
     },
     {
       "name" : "timewatcher.task-executor.keep-alive-seconds",

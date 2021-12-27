@@ -65,7 +65,6 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
         try {
             doHandle(result);
         } catch (Exception e) {
-            e.printStackTrace();
             log.warn("保存报告数据失败: {} , contextName={}, contextId={}", e.getMessage(),
                     result.getContextName(), result.getContextId());
         }
@@ -74,7 +73,7 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
     private void doHandle(TimeWatchResultEvent result) {
         // 记录明细
         List<TimeWatchRecord> allTimeWatchRecords = result.getAllTimeWatchRecords();
-        jdbcTemplate.batchUpdate("insert into timewatcher_info (context_id,context_name,parent_watch_name,watch_name,watch_index,cost_millis,start_time,stop_time,thread_name,trace_id,properties,is_root) " +
+        jdbcTemplate.batchUpdate("insert into "+getReportInfoTableName()+" (context_id,context_name,parent_watch_name,watch_name,watch_index,cost_millis,start_time,stop_time,thread_name,trace_id,properties,is_root) " +
                 "values (?,?,?,?,?,?,?,?,?,?,?,?)", allTimeWatchRecords, allTimeWatchRecords.size(), (ps, timeWatchRecord) -> {
                     ps.setObject(1, timeWatchRecord.getContextId());
                     ps.setObject(2, timeWatchRecord.getContextName());
@@ -93,7 +92,7 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
         // 记录报告
         WatchContext watchContext = result.getWatchContext();
         byte[] reportBytes = watchContext.getReportBytes();
-        jdbcTemplate.update("insert into timewatcher_report (context_id,report_type,report_data) values (?,?,?)",
+        jdbcTemplate.update("insert into "+getReportTableName()+" (context_id,report_type,report_data) values (?,?,?)",
                 result.getContextId(), 1, reportBytes);
     }
 
@@ -146,7 +145,7 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
     }
 
     private void createTableTimewatcherReport() {
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `timewatcher_report` ( " +
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `"+getReportTableName()+"` ( " +
                 "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键', " +
                 "  `context_id` varchar(64) NOT NULL COMMENT '上下文ID', " +
                 "  `report_type` tinyint(4) DEFAULT '1' COMMENT '1:png图片', " +
@@ -160,7 +159,7 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
     }
 
     private void createTableTimewatcherInfo() {
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `timewatcher_info` ( " +
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `"+getReportInfoTableName()+"` ( " +
                 "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键', " +
                 "  `context_id` varchar(64) DEFAULT NULL COMMENT '上下文ID', " +
                 "  `context_name` varchar(100) DEFAULT NULL COMMENT '上下文名称', " +
@@ -181,6 +180,14 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
                 "  KEY `idx_watch_name` (`watch_name`), " +
                 "  KEY `idx_created_at` (`created_at`) " +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    }
+
+    private String getReportTableName(){
+        return properties.getJdbcReportTableName();
+    }
+
+    private String getReportInfoTableName(){
+        return properties.getJdbcReportInfoTableName();
     }
 
     public boolean isEnabled() {

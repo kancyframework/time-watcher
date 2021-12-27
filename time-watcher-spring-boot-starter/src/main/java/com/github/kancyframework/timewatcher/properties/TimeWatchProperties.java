@@ -54,6 +54,15 @@ public class TimeWatchProperties {
     private String jdbcTemplateBeanName = "timewatcherJdbcTemplate";
 
     /**
+     * jdbc报告的表名
+     */
+    private String jdbcReportTableName = "timewatcher_report";
+    /**
+     * jdbc报告明细的表名
+     */
+    private String jdbcReportInfoTableName = "timewatcher_report_info";
+
+    /**
      * resultHandler开关
      */
     private Map<String, Boolean> resultHandlers = new HashMap<>();
