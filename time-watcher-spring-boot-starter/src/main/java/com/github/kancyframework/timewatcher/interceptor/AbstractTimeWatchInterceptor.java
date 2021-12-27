@@ -135,6 +135,7 @@ public abstract class AbstractTimeWatchInterceptor implements TimeWatchIntercept
      * @return
      */
     protected WatcherConfig findWatcherConfig(String contextName, Method interceptMethod) {
+
         WatcherConfig watcherConfig = new WatcherConfig();
         TimeWatcher annotation = AnnotatedElementUtils.findMergedAnnotation(interceptMethod, TimeWatcher.class);
         watcherConfig.setEnabled(annotation.enabled());
@@ -143,13 +144,24 @@ public abstract class AbstractTimeWatchInterceptor implements TimeWatchIntercept
         watcherConfig.setSampleRate(annotation.sampleRate());
         watcherConfig.setNoThrows(annotation.noThrows());
 
+        watcherConfig.getProperties().putAll(properties.getProperties());
+        if (Objects.nonNull(properties.getMaxTotalCostMillis())){
+            watcherConfig.setMaxTotalCostMillis(properties.getMaxTotalCostMillis());
+        }
+        if (Objects.nonNull(properties.getMaxCostMillis())){
+            watcherConfig.setMaxCostMillis(properties.getMaxCostMillis());
+        }
+        if (Objects.nonNull(properties.getSampleRate())){
+            watcherConfig.setSampleRate(properties.getSampleRate());
+        }
+        if (Objects.nonNull(properties.getNoThrows())){
+            watcherConfig.setNoThrows(properties.getNoThrows());
+        }
+
         WatcherConfig config = properties.getWatchers().get(contextName);
         if (Objects.nonNull(config)){
+            watcherConfig.getProperties().putAll(config.getProperties());
             if (Objects.nonNull(config.getEnabled())){
-                watcherConfig.setEnabled(config.getEnabled());
-            }
-            // 全局属性
-            if (Objects.equals(config.getEnabled(), Boolean.FALSE)){
                 watcherConfig.setEnabled(config.getEnabled());
             }
             if (Objects.nonNull(config.getMaxTotalCostMillis())){
@@ -165,22 +177,12 @@ public abstract class AbstractTimeWatchInterceptor implements TimeWatchIntercept
                 watcherConfig.setNoThrows(config.getNoThrows());
             }
         }
+
         // 全局属性
         if (Objects.equals(properties.getEnabled(),Boolean.FALSE)){
             watcherConfig.setEnabled(properties.getEnabled());
         }
-        if (Objects.nonNull(properties.getMaxTotalCostMillis())){
-            watcherConfig.setMaxTotalCostMillis(properties.getMaxTotalCostMillis());
-        }
-        if (Objects.nonNull(properties.getMaxCostMillis())){
-            watcherConfig.setMaxCostMillis(properties.getMaxCostMillis());
-        }
-        if (Objects.nonNull(properties.getSampleRate())){
-            watcherConfig.setSampleRate(properties.getSampleRate());
-        }
-        if (Objects.nonNull(properties.getNoThrows())){
-            watcherConfig.setNoThrows(properties.getNoThrows());
-        }
+
         return watcherConfig;
     }
 

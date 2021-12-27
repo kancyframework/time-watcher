@@ -43,11 +43,7 @@ public class InnerTimeWatchInterceptor extends AbstractTimeWatchInterceptor{
     }
 
     private void putContextProperties(WatchContext context) {
-        // 设置全局属性
-        Map<String, Object> gProperties = new HashMap<>();
-        context.putContextProperty(gProperties);
-
-        // 设置私有属性
+        // 设置属性
         WatcherConfig watcherConfig = getCurrentWatcherConfig();
         context.putContextProperty(watcherConfig.getProperties());
 
@@ -150,7 +146,7 @@ public class InnerTimeWatchInterceptor extends AbstractTimeWatchInterceptor{
         if (sampleRate >= 1.0){
             return true;
         }
-        return ThreadLocalRandom.current().nextDouble() < sampleRate;
+        return ThreadLocalRandom.current().nextDouble() < sampleRate + 0.0001;
     }
 
     @Override

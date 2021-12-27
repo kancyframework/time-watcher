@@ -25,7 +25,7 @@ public class TimeWatcherTestController {
 
 
     @Test
-    @Watcher(name = "index", enabled = false)
+    @Watcher(name = "index", enabled = true)
     @GetMapping("/index")
     public Object index() throws Exception {
         TimeWatcher.watch("controller-test-1", this::randomSleep);
