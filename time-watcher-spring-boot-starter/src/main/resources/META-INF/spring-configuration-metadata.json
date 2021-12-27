@@ -67,6 +67,27 @@
       "defaultValue": true
     },
     {
+      "name": "timewatcher.result-handlers.jdbc",
+      "type": "java.lang.Boolean",
+      "description": "JDBC resultHandler开关",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "timewatcher.result-handlers.oss",
+      "type": "java.lang.Boolean",
+      "description": "OSS resultHandler开关",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "timewatcher.jdbc-template-bean-name",
+      "type": "java.lang.Boolean",
+      "description": "jdbcTemplate beanName",
+      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue": "timewatcherJdbcTemplate"
+    },
+    {
       "name": "timewatcher.task-executor.keep-alive-seconds",
       "type": "java.lang.Integer",
       "description": "保持激活时间（秒）",

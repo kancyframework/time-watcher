@@ -1,6 +1,7 @@
 package com.github.kancyframework.timewatcher.config;
 
 import com.github.kancyframework.timewatcher.aspect.TimeWatchAspect;
+import com.github.kancyframework.timewatcher.handler.JdbcTimeWatchResultHandler;
 import com.github.kancyframework.timewatcher.interceptor.DefaultTimeWatchInterceptor;
 import com.github.kancyframework.timewatcher.listener.TimeWatchResultEventListener;
 import com.github.kancyframework.timewatcher.properties.TimeWatchProperties;
@@ -31,6 +32,12 @@ public class TimeWatcherAutoConfiguration {
     @ConditionalOnMissingBean
     public TimeWatchAspect timeWatchAspect(){
         return new TimeWatchAspect();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public JdbcTimeWatchResultHandler jdbcTimeWatchResultHandler(TimeWatchProperties timeWatchProperties){
+        return new JdbcTimeWatchResultHandler(timeWatchProperties);
     }
 
     @Bean

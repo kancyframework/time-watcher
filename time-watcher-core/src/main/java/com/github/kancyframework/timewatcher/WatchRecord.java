@@ -17,7 +17,7 @@ public class WatchRecord {
     /**
      * 索引,根默认为0
      */
-    private Integer index;
+    private Integer watchIndex;
 
     /**
      * 父观测名称

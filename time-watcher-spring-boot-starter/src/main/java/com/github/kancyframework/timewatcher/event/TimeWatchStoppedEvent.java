@@ -38,6 +38,8 @@ public class TimeWatchStoppedEvent extends TimeWatchEvent {
         super(source, watchContext);
 
         this.rootTimeWatchRecord = toTimeWatchRecord(watchContext.getRootWatchRecord(), watchContext);
+        this.rootTimeWatchRecord.setRoot(true);
+
         this.timeWatchRecords = watchContext.getWatchRecords()
                 .stream()
                 .map(watchRecord -> toTimeWatchRecord(watchRecord, watchContext))
@@ -60,6 +62,7 @@ public class TimeWatchStoppedEvent extends TimeWatchEvent {
         timeWatchRecord.setContextId(watchContext.getContextId());
         timeWatchRecord.setTraceId(watchContext.getTraceId());
         timeWatchRecord.setContextName(watchContext.getContextName());
+        timeWatchRecord.setRoot(false);
     }
 
     public List<TimeWatchRecord> getAllTimeWatchRecords() {

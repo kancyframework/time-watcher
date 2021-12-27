@@ -25,7 +25,7 @@ public class TimeWatchProperties {
     /**
      * watcher配置
      */
-    private Map<String, WatcherConfig> watchers;
+    private Map<String, WatcherConfig> watchers = new HashMap<>();
     /**
      * 全局:最大总耗时（毫秒）
      */
@@ -42,6 +42,16 @@ public class TimeWatchProperties {
      * 全局:扩展属性
      */
     private Map<String, Object> properties = new HashMap<>();
+
+    /**
+     * jdbc名称
+     */
+    private String jdbcTemplateBeanName = "timewatcherJdbcTemplate";
+
+    /**
+     * resultHandler开关
+     */
+    private Map<String, Boolean> resultHandlers = new HashMap<>();
 
     /**
      * 线程池属性

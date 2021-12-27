@@ -25,4 +25,9 @@ public class TimeWatchRecord extends WatchRecord{
      */
     private String contextName;
 
+    /**
+     * 是否根节点
+     */
+    private boolean isRoot;
+
 }

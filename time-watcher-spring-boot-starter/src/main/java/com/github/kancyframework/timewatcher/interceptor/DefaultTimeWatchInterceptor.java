@@ -164,9 +164,9 @@ public class DefaultTimeWatchInterceptor extends AbstractTimeWatchInterceptor {
     private void fillWatchRecordIndex(WatchContext context) {
         List<WatchRecord> records = context.getWatchRecords();
         // 1.设置观测序号
-        context.getRootWatchRecord().setIndex(0);
+        context.getRootWatchRecord().setWatchIndex(0);
         for (int i = 0; i < records.size(); i++) {
-            records.get(i).setIndex(i+1);
+            records.get(i).setWatchIndex(i+1);
         }
         // 2.设置内置属性
         context.putContextProperty("__watchSize__", context.getWatchRecords().size());
