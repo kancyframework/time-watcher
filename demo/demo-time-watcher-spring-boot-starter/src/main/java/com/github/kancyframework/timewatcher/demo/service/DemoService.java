@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DemoService {
 
-    @TimeWatch
+    @TimeWatch(context = "DemoService.index")
     public String index() throws Exception{
         TimeWatcher.watch(()-> {
             try {

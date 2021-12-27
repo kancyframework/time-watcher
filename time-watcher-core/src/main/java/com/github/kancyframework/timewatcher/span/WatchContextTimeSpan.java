@@ -141,10 +141,12 @@ public class WatchContextTimeSpan extends TimeSpan{
     }
 
     private String getRootSpanLabel() {
+        Object url = watchContext.getRootWatchRecord().getProperties().get(("__url__"));
+        String contextName = watchContext.getContextName();
         return String.format("%sms | %s | %s%s%s",
                 watchRecord.getCostMillis(),
                 getThreadName(),
-                watchContext.getContextName(),
+                Objects.nonNull(url) && !contextName.contains("url") ? String.format("%s (%s)", contextName, url) : contextName,
                 getClassAndMethodLabel(),
                 getTraceIdLabel()
         );

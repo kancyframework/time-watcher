@@ -67,7 +67,10 @@ public class TimeWatchAspect implements Ordered {
             try {
                 return joinPoint.proceed();
             } finally {
-                TimeWatcher.close();
+                WatchContext watchContext = TimeWatcher.getWatchContext();
+                if (!watchContext.isEnabled()){
+                    TimeWatcher.close();
+                }
             }
         }
 
@@ -97,12 +100,12 @@ public class TimeWatchAspect implements Ordered {
             String watchContextName = getWatchContextName(currentMethod);
             for (TimeWatchInterceptor timeWatchInterceptor : timeWatchInterceptors) {
                 if (!timeWatchInterceptor.isEnabled(watchContextName, currentMethod)){
-                    watchContext.setEnabled(false);
                     log.info("timeWatchInterceptor enabled is false , current method : {}.{}(..)",
                             currentMethod.getDeclaringClass().getSimpleName(), currentMethod.getName());
                     return false;
                 }
             }
+            watchContext.setContextName(watchContextName);
         } catch (Exception e) {
             log.info("canTimeWatch fail : {}", e.getMessage());
         }
@@ -142,9 +145,8 @@ public class TimeWatchAspect implements Ordered {
         try {
             WatchContext watchContext = TimeWatcher.getWatchContext();
             Method currentMethod = getCurrentMethod(joinPoint);
-
             TimeWatcher.enabled();
-            TimeWatcher.start(getWatchContextName(currentMethod));
+            TimeWatcher.start(watchContext.getContextName());
 
             // 前置处理
             for (TimeWatchInterceptor timeWatchInterceptor : timeWatchInterceptors) {
