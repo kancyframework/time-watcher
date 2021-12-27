@@ -56,11 +56,11 @@ public class TimeWatchProperties {
     /**
      * jdbc报告的表名
      */
-    private String jdbcReportTableName = "timewatcher_report";
+    private String jdbcReportTableName = "t_timewatcher_report";
     /**
      * jdbc报告明细的表名
      */
-    private String jdbcReportInfoTableName = "timewatcher_report_info";
+    private String jdbcReportInfoTableName = "t_timewatcher_report_info";
 
     /**
      * resultHandler开关
