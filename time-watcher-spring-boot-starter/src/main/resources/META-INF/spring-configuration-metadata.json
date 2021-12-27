@@ -60,9 +60,9 @@
       "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig"
     },
     {
-      "name": "timewatcher.task-executor.decorate-handlers.mdc",
+      "name": "timewatcher.task-executor.thread-local-handlers.mdc",
       "type": "java.lang.Boolean",
-      "description": "MDC decorateHandler开关",
+      "description": "MDC threadlocalHandler开关",
       "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
       "defaultValue": true
     },

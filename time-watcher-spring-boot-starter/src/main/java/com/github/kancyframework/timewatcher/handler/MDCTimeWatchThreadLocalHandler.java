@@ -10,7 +10,7 @@ import java.util.Map;
  * @author huangchengkang
  * @date 2021/12/26 11:32
  */
-public class MDCTimeWatchTaskDecorateHandler implements TimeWatchTaskDecorateHandler<Map<String, String>> {
+public class MDCTimeWatchThreadLocalHandler implements TimeWatchThreadLocalHandler<Map<String, String>> {
 
     /**
      * 名字
@@ -26,7 +26,7 @@ public class MDCTimeWatchTaskDecorateHandler implements TimeWatchTaskDecorateHan
      * 准备上下文数据
      */
     @Override
-    public Map<String, String> copyOfContext() {
+    public Map<String, String> copyCurrentThreadLocalContext() {
         return MDC.getCopyOfContextMap();
     }
 
@@ -36,7 +36,7 @@ public class MDCTimeWatchTaskDecorateHandler implements TimeWatchTaskDecorateHan
      * @param context
      */
     @Override
-    public void decorate(Map<String, String> context) {
+    public void setThreadLocalContext(Map<String, String> context) {
         MDC.setContextMap(context);
     }
 
@@ -44,7 +44,7 @@ public class MDCTimeWatchTaskDecorateHandler implements TimeWatchTaskDecorateHan
      * 清除
      */
     @Override
-    public void clear() {
+    public void clearThreadLocalContext() {
         MDC.clear();
     }
 

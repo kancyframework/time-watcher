@@ -1,7 +1,7 @@
 package com.github.kancyframework.timewatcher.config;
 
-import com.github.kancyframework.timewatcher.handler.MDCTimeWatchTaskDecorateHandler;
-import com.github.kancyframework.timewatcher.handler.TimeWatchTaskDecorateHandler;
+import com.github.kancyframework.timewatcher.handler.MDCTimeWatchThreadLocalHandler;
+import com.github.kancyframework.timewatcher.handler.TimeWatchThreadLocalHandler;
 import com.github.kancyframework.timewatcher.properties.ThreadPoolConfig;
 import com.github.kancyframework.timewatcher.properties.TimeWatchProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -37,15 +37,15 @@ public class TimeWatcherThreadPoolAutoConfiguration {
     private TimeWatchProperties timeWatchProperties = new TimeWatchProperties();
 
     @Autowired(required = false)
-    private List<TimeWatchTaskDecorateHandler> timeWatchTaskDecorateHandlers = new ArrayList<>();
+    private List<TimeWatchThreadLocalHandler> timeWatchThreadLocalHandlers = new ArrayList<>();
 
     @Autowired
     private ApplicationContext applicationContext;
 
 
     @Bean
-    public MDCTimeWatchTaskDecorateHandler mdcTaskDecorateHandler() {
-        return new MDCTimeWatchTaskDecorateHandler();
+    public MDCTimeWatchThreadLocalHandler mdcTaskDecorateHandler() {
+        return new MDCTimeWatchThreadLocalHandler();
     }
 
     @Bean(name = "timeWatcherExecutor")
@@ -90,26 +90,26 @@ public class TimeWatcherThreadPoolAutoConfiguration {
             return taskDecorator;
         } else {
             return runnable -> {
-                List<TimeWatchTaskDecorateHandler> handlers = timeWatchTaskDecorateHandlers
+                List<TimeWatchThreadLocalHandler> handlers = timeWatchThreadLocalHandlers
                         .stream()
                         .filter(h -> taskProperties.getDecorateHandlers().getOrDefault(h.name(), true))
                         .collect(Collectors.toList());
                 List<Object> contexts = handlers.stream()
-                        .map(TimeWatchTaskDecorateHandler::copyOfContext)
+                        .map(TimeWatchThreadLocalHandler::copyCurrentThreadLocalContext)
                         .collect(Collectors.toList());
 
                 return () -> {
                     try {
                         for (int i = 0; i < handlers.size(); i++) {
-                            TimeWatchTaskDecorateHandler<Object> timeWatchTaskDecorateHandler = handlers.get(i);
+                            TimeWatchThreadLocalHandler<Object> timeWatchThreadLocalHandler = handlers.get(i);
                             Object context = contexts.get(i);
                             if (Objects.nonNull(context)){
-                                timeWatchTaskDecorateHandler.decorate(contexts.get(i));
+                                timeWatchThreadLocalHandler.setThreadLocalContext(contexts.get(i));
                             }
                         }
                         runnable.run();
                     } finally {
-                        handlers.forEach(TimeWatchTaskDecorateHandler::clear);
+                        handlers.forEach(TimeWatchThreadLocalHandler::clearThreadLocalContext);
                     }
                 };
             };
