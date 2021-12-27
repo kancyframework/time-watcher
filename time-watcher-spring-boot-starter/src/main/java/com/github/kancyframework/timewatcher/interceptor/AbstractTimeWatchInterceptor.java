@@ -191,7 +191,7 @@ public abstract class AbstractTimeWatchInterceptor implements TimeWatchIntercept
 
     protected String getWatcherConfigKey(String contextName){
         String watcherConfigKey = contextName;
-        if (contextName.startsWith("url:")){
+        if (contextName.startsWith("url:") && contextName.contains("/")){
             watcherConfigKey =  contextName.replace("/", "-");
             return watcherConfigKey;
         }
