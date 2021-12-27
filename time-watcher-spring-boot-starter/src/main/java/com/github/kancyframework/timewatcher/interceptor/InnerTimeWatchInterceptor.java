@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * InnerTimeWatchInterceptor
@@ -140,7 +141,16 @@ public class InnerTimeWatchInterceptor extends AbstractTimeWatchInterceptor{
         if (!watcherConfig.getEnabled()){
             return false;
         }
-        return true;
+
+        // 采样率
+        double sampleRate = watcherConfig.getSampleRate();
+        if (sampleRate <= 0){
+            return false;
+        }
+        if (sampleRate >= 1.0){
+            return true;
+        }
+        return ThreadLocalRandom.current().nextDouble() < sampleRate;
     }
 
     @Override
