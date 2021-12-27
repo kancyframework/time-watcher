@@ -21,12 +21,12 @@ public class AnnotationTests {
         Method method2 = ReflectionUtils.findMethod(getClass(), "test2");
         Method method3 = ReflectionUtils.findMethod(getClass(), "test3");
 
-        System.out.println(AnnotationUtils.findAnnotation(method1, TimeWatcher.class));
-        System.out.println(AnnotationUtils.findAnnotation(method2, TimeWatcher.class));
+//        System.out.println(AnnotationUtils.findAnnotation(method1, TimeWatcher.class));
+//        System.out.println(AnnotationUtils.findAnnotation(method2, TimeWatcher.class));
 
-        System.out.println(AnnotatedElementUtils.findMergedAnnotation(method1, TimeWatcher.class));
+//        System.out.println(AnnotatedElementUtils.findMergedAnnotation(method1, TimeWatcher.class));
         System.out.println(AnnotatedElementUtils.findMergedAnnotation(method2, TimeWatcher.class));
-        System.out.println(AnnotatedElementUtils.findMergedAnnotation(method3, TimeWatcher.class));
+//        System.out.println(AnnotatedElementUtils.findMergedAnnotation(method3, TimeWatcher.class));
     }
 
     @TimeWatch(context = "test1", maxCostMillis = 78)
@@ -34,7 +34,7 @@ public class AnnotationTests {
 
     }
 
-    @Watcher(name = "test2", maxCostMillis = 45, maxTotalCostMillis = 900)
+    @Watcher(name = "test2", maxCostMillis = 45, maxTotalCostMillis = 900, enabled = true)
     public void test2(){
 
     }

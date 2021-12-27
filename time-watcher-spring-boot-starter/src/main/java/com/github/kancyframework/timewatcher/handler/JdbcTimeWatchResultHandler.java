@@ -65,6 +65,7 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
         try {
             doHandle(result);
         } catch (Exception e) {
+            e.printStackTrace();
             log.warn("保存报告数据失败: {} , contextName={}, contextId={}", e.getMessage(),
                     result.getContextName(), result.getContextId());
         }

@@ -36,7 +36,7 @@ public class SimpleWatchContext extends WatchContext{
     /**
      * 处理失败不抛出异常
      */
-    private boolean noThrows = true;
+    private Boolean noThrows;
 
     /**
      * 启动上下文

@@ -2,6 +2,8 @@ package com.github.kancyframework.timewatcher.interceptor;
 
 import com.github.kancyframework.timewatcher.WatchContext;
 
+import java.lang.reflect.Method;
+
 /**
  * TimeWatchInterceptor
  *
@@ -16,7 +18,7 @@ public interface TimeWatchInterceptor {
      * @param contextName 上下文名称
      * @return boolean
      */
-    default boolean isEnabled(String contextName){
+    default boolean isEnabled(String contextName, Method method){
         return true;
     }
 
@@ -26,7 +28,7 @@ public interface TimeWatchInterceptor {
      * @param context 上下文
      * @return boolean
      */
-    default void preHandle(WatchContext context){
+    default void preHandle(WatchContext context, Method method, Object[] args){
 
     }
 
@@ -35,7 +37,7 @@ public interface TimeWatchInterceptor {
      * @param context
      * @return
      */
-    default void postHandle(WatchContext context){
+    default void postHandle(WatchContext context, Method method, Object[] args){
 
     }
 }

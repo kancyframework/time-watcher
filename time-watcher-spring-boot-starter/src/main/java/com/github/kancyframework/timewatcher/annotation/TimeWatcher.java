@@ -41,6 +41,11 @@ public @interface TimeWatcher {
      * @return
      */
     boolean noThrows() default true;
+    /**
+     * 采样率
+     * @return
+     */
+    double sampleRate() default 1.0;
 
     /**
      * 最大总耗时（毫秒）

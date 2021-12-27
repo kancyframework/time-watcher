@@ -70,7 +70,7 @@ public abstract class TimeWatcher {
             try {
                 watchContext.start(contextName);
             } catch (Exception e) {
-                if (watchContext.isNoThrows()){
+                if (watchContext.getNoThrows()){
                     log.error("time watcher start fail:", e);
                 }else {
                     throw e;
@@ -86,11 +86,7 @@ public abstract class TimeWatcher {
             try {
                 watchContext.start(contextName);
             } catch (Exception e) {
-                if (watchContext.isNoThrows()){
-                    log.error("time watcher start fail:", e);
-                }else {
-                    throw e;
-                }
+                log.error("time watcher start fail:", e);
             }
             setCallClassNameAndMethodName();
         }
@@ -106,7 +102,7 @@ public abstract class TimeWatcher {
             try {
                 watchContext.stop();
             } catch (Exception e) {
-                if (watchContext.isNoThrows()){
+                if (watchContext.getNoThrows()){
                     log.error("time watcher stop fail:", e);
                 }else {
                     throw e;
@@ -264,7 +260,7 @@ public abstract class TimeWatcher {
             watchRecords.add(watchRecord);
             watchRecordStack.push(watchRecord);
         } catch (Exception e) {
-            if (Objects.nonNull(watchContext) && watchContext.isNoThrows()){
+            if (Objects.nonNull(watchContext) && watchContext.getNoThrows()){
                 log.error("preWatch fail: watchName={} , properties={}\n{}", watchName, properties, e);
             }else {
                 throw e;
@@ -286,7 +282,7 @@ public abstract class TimeWatcher {
             String parentWatchName = watchContext.getRootWatchRecord().getWatchName();
             currentWatchRecord.setParentWatchName(parentWatchName);
         } catch (Exception e) {
-            if (Objects.nonNull(watchContext) && watchContext.isNoThrows()){
+            if (Objects.nonNull(watchContext) && watchContext.getNoThrows()){
                 log.error("postWatch fail: watchName={} , properties={}\n{}", watchName, properties, e);
             }else {
                 throw e;
@@ -317,7 +313,7 @@ public abstract class TimeWatcher {
             watchContext.getRootWatchRecord().getProperties().put("__methodName__",
                     Thread.currentThread().getStackTrace()[3].getMethodName());
         } catch (Exception e) {
-            if (Objects.nonNull(watchContext) && watchContext.isNoThrows()){
+            if (Objects.nonNull(watchContext) && watchContext.getNoThrows()){
                 log.warn("setCallClassNameAndMethodName fail : {}", e.getMessage());
             }else {
                 throw e;

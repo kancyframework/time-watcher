@@ -1,13 +1,11 @@
 package com.github.kancyframework.timewatcher.aspect;
 
-import com.github.kancyframework.timewatcher.SimpleWatchContext;
 import com.github.kancyframework.timewatcher.TimeWatcher;
 import com.github.kancyframework.timewatcher.WatchContext;
 import com.github.kancyframework.timewatcher.event.TimeWatchResultEvent;
 import com.github.kancyframework.timewatcher.event.TimeWatchStartedEvent;
 import com.github.kancyframework.timewatcher.event.TimeWatchStoppedEvent;
 import com.github.kancyframework.timewatcher.interceptor.TimeWatchInterceptor;
-import com.github.kancyframework.timewatcher.properties.TimeWatchProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -19,13 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,10 +43,7 @@ public class TimeWatchAspect implements Ordered {
     private ApplicationContext applicationContext;
 
     @Autowired(required = false)
-    private List<TimeWatchInterceptor> timeWatchInterceptors = Collections.emptyList();
-
-    @Autowired
-    private TimeWatchProperties timeWatchProperties;
+    private List<TimeWatchInterceptor> timeWatchInterceptors = new ArrayList<>();
 
     /**
      * 切点
@@ -66,12 +63,17 @@ public class TimeWatchAspect implements Ordered {
      */
     @Around(value = "timeWatchPointCut()")
     public Object timeWatchAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        if (!timeWatchBefore(joinPoint)){
-            return joinPoint.proceed();
+        if (!canTimeWatch(joinPoint)){
+            try {
+                return joinPoint.proceed();
+            } finally {
+                TimeWatcher.close();
+            }
         }
 
         Throwable throwable = null;
         try {
+            timeWatchBefore(joinPoint);
             return joinPoint.proceed();
         } catch (Throwable e) {
             throwable = e;
@@ -82,16 +84,33 @@ public class TimeWatchAspect implements Ordered {
 
     }
 
+    private boolean canTimeWatch(JoinPoint joinPoint) {
+        try {
+            // 提前拦截
+            WatchContext watchContext = TimeWatcher.getWatchContext();
+            if (watchContext.isEnabled() && Objects.nonNull(watchContext.getContextId())){
+                return false;
+            }
+
+            // 前置开关拦截
+            Method currentMethod = getCurrentMethod(joinPoint);
+            String watchContextName = getWatchContextName(currentMethod);
+            for (TimeWatchInterceptor timeWatchInterceptor : timeWatchInterceptors) {
+                if (!timeWatchInterceptor.isEnabled(watchContextName, currentMethod)){
+                    watchContext.setEnabled(false);
+                    log.info("timeWatchInterceptor enabled is false , current method : {}.{}(..)",
+                            currentMethod.getDeclaringClass().getSimpleName(), currentMethod.getName());
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            log.info("canTimeWatch fail : {}", e.getMessage());
+        }
+        return true;
+    }
+
     private void timeWatchReturn(ProceedingJoinPoint joinPoint, Throwable throwable) {
         Method currentMethod = getCurrentMethod(joinPoint);
-        com.github.kancyframework.timewatcher.annotation.TimeWatcher annotation
-                = AnnotatedElementUtils.findMergedAnnotation(currentMethod,
-                com.github.kancyframework.timewatcher.annotation.TimeWatcher.class);
-
-        if (Objects.isNull(annotation) || !annotation.enabled()){
-            return;
-        }
-
         try {
             WatchContext watchContext = TimeWatcher.getWatchContext();
             if (watchContext.isEnabled()){
@@ -99,7 +118,7 @@ public class TimeWatchAspect implements Ordered {
                 TimeWatcher.stop();
                 // 后置处理
                 for (TimeWatchInterceptor timeWatchInterceptor : timeWatchInterceptors) {
-                    timeWatchInterceptor.postHandle(watchContext);
+                    timeWatchInterceptor.postHandle(watchContext, currentMethod, joinPoint.getArgs());
                 }
                 // 发送事件
                 if (watchContext.isEnabled()){
@@ -109,9 +128,6 @@ public class TimeWatchAspect implements Ordered {
                 }
             }
         } catch (Exception e) {
-            if (!annotation.noThrows()){
-                throw e;
-            }
             log.error("timeWatchReturn fail: {}", e.getMessage());
         } finally {
             TimeWatcher.close();
@@ -122,77 +138,47 @@ public class TimeWatchAspect implements Ordered {
     /**
      * 调用之前
      */
-    public boolean timeWatchBefore(JoinPoint joinPoint) {
-        Method currentMethod = getCurrentMethod(joinPoint);
+    public void timeWatchBefore(JoinPoint joinPoint) {
+        try {
+            WatchContext watchContext = TimeWatcher.getWatchContext();
+            Method currentMethod = getCurrentMethod(joinPoint);
 
+            TimeWatcher.enabled();
+            TimeWatcher.start(getWatchContextName(currentMethod));
+
+            // 前置处理
+            for (TimeWatchInterceptor timeWatchInterceptor : timeWatchInterceptors) {
+                timeWatchInterceptor.preHandle(watchContext, currentMethod, joinPoint.getArgs());
+            }
+
+            // 发送开始事件
+            if (watchContext.isEnabled()){
+                TimeWatchStartedEvent timeWatchStartedEvent = new TimeWatchStartedEvent(joinPoint, watchContext);
+                applicationContext.publishEvent(timeWatchStartedEvent);
+            }
+        } catch (Exception e) {
+            log.error("timeWatchBefore fail: {}", e.getMessage());
+        }
+    }
+
+    private String getWatchContextName(Method currentMethod) {
         com.github.kancyframework.timewatcher.annotation.TimeWatcher annotation
                 = AnnotatedElementUtils.findMergedAnnotation(currentMethod,
                 com.github.kancyframework.timewatcher.annotation.TimeWatcher.class);
 
-        if (Objects.isNull(annotation) || !annotation.enabled()){
-            return false;
-        }
+        String contextName = annotation.value();
 
-        WatchContext watchContext = TimeWatcher.getWatchContext();
-        if (watchContext.isEnabled()
-                && Objects.nonNull(watchContext.getContextId())){
-            return false;
-        }
-
-        // 前置开关拦截
-        for (TimeWatchInterceptor timeWatchInterceptor : timeWatchInterceptors) {
-            if (!timeWatchInterceptor.isEnabled(watchContext.getContextName())){
-                watchContext.setEnabled(false);
-                log.info("timeWatchInterceptor enabled is false , current watchContext : {}", watchContext.getContextName());
-                return false;
-            }
-        }
-
-        try {
-            TimeWatcher.enabled();
-            TimeWatcher.start(getWatchContextName(currentMethod, annotation.value()));
-
-            // 设置私有属性
-            watchContext.putContextProperty("__root__", true);
-            watchContext.putContextProperty("__className__", currentMethod.getDeclaringClass().getName());
-            watchContext.putContextProperty("__methodName__", currentMethod.getName());
-            watchContext.putContextProperty("__methodParameterCount__", currentMethod.getParameterCount());
-
-            // 启用时设置注解的属性
-            if (watchContext instanceof SimpleWatchContext){
-                SimpleWatchContext simpleWatchContext = (SimpleWatchContext) watchContext;
-                simpleWatchContext.setMaxTotalCostMillis(annotation.maxTotalCostMillis());
-                simpleWatchContext.setMaxCostMillis(annotation.maxCostMillis());
-                simpleWatchContext.setNoThrows(annotation.noThrows());
-            }
-
-            // 前置处理
-            for (TimeWatchInterceptor timeWatchInterceptor : timeWatchInterceptors) {
-                timeWatchInterceptor.preHandle(watchContext);
-            }
-            // 发送开始事件
-            if (watchContext.isEnabled()){
-                TimeWatchStartedEvent timeWatchStartedEvent = new TimeWatchStartedEvent(joinPoint, TimeWatcher.getWatchContext());
-                applicationContext.publishEvent(timeWatchStartedEvent);
-            }
-        } catch (Exception e) {
-            if (!annotation.noThrows()){
-                throw e;
-            }
-            log.error("timeWatchBefore fail: {}", e.getMessage());
-        }
-        return true;
-    }
-
-    private String getWatchContextName(Method currentMethod, String contextName) {
         if (StringUtils.hasText(contextName)){
             return contextName;
         }
 
-        String currentRequestUrl = getCurrentRequestUrl();
-        if (StringUtils.hasText(currentRequestUrl)){
-            contextName = String.format("url:%s", currentRequestUrl);
-            return contextName;
+        // 如果是controller
+        if (Objects.nonNull(AnnotationUtils.findAnnotation(currentMethod.getDeclaringClass(), Controller.class))){
+            String currentRequestUrl = getCurrentRequestUrl();
+            if (StringUtils.hasText(currentRequestUrl)){
+                contextName = String.format("url:%s", currentRequestUrl);
+                return contextName;
+            }
         }
 
         String className = currentMethod.getDeclaringClass().getSimpleName();

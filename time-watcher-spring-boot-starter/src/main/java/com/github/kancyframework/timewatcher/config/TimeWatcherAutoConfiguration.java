@@ -2,7 +2,7 @@ package com.github.kancyframework.timewatcher.config;
 
 import com.github.kancyframework.timewatcher.aspect.TimeWatchAspect;
 import com.github.kancyframework.timewatcher.handler.JdbcTimeWatchResultHandler;
-import com.github.kancyframework.timewatcher.interceptor.DefaultTimeWatchInterceptor;
+import com.github.kancyframework.timewatcher.interceptor.InnerTimeWatchInterceptor;
 import com.github.kancyframework.timewatcher.listener.TimeWatchResultEventListener;
 import com.github.kancyframework.timewatcher.properties.TimeWatchProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -42,8 +42,8 @@ public class TimeWatcherAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DefaultTimeWatchInterceptor defaultTimeWatchInterceptor(){
-        return new DefaultTimeWatchInterceptor();
+    public InnerTimeWatchInterceptor innerTimeWatchInterceptor(){
+        return new InnerTimeWatchInterceptor();
     }
 
     @Bean

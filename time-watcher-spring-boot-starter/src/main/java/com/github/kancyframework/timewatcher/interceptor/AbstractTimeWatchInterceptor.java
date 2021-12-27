@@ -1,12 +1,18 @@
 package com.github.kancyframework.timewatcher.interceptor;
 
 import com.github.kancyframework.timewatcher.WatchContext;
+import com.github.kancyframework.timewatcher.annotation.TimeWatcher;
+import com.github.kancyframework.timewatcher.properties.TimeWatchProperties;
+import com.github.kancyframework.timewatcher.properties.WatcherConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
@@ -16,48 +22,185 @@ import java.util.Objects;
  * @date 2021/12/25 4:57
  */
 @Slf4j
-public abstract class AbstractTimeWatchInterceptor implements TimeWatchInterceptor , Ordered {
+public abstract class AbstractTimeWatchInterceptor implements TimeWatchInterceptor,Ordered {
+
+    private static final ThreadLocal<Data> dataThreadLocal = ThreadLocal.withInitial(Data::new);
+
+    @Autowired
+    protected TimeWatchProperties properties;
+
+    /**
+     * 是否启用
+     *
+     * @param contextName 上下文名称
+     * @param interceptMethod
+     * @return boolean
+     */
+    @Override
+    public final boolean isEnabled(String contextName, Method interceptMethod) {
+        try {
+            putContextName(contextName);
+            putInterceptMethod(interceptMethod);
+            return isEnabled(contextName);
+        } finally {
+            dataThreadLocal.remove();
+        }
+    }
+
+    protected boolean isEnabled(String contextName){
+        return true;
+    }
 
     /**
      * 前置处理
      *
-     * @param context 上下文
-     * @return boolean
+     * @param context         上下文
+     * @param interceptMethod 拦截方法
+     * @param args            参数
      */
     @Override
-    public void preHandle(WatchContext context) {
+    public final void preHandle(WatchContext context, Method interceptMethod, Object[] args){
         if (context.isEnabled()){
-            doPreHandle(context);
+            putContextName(context.getContextName());
+            putWatcherContext(context);
+            putInterceptMethod(interceptMethod);
+            putInterceptMethodArgs(args);
+            doPreHandle(context, interceptMethod, args);
         }
     }
 
     /**
      * 前置处理
      *
-     * @param context 上下文
-     * @return boolean
+     * @param context         上下文
+     * @param interceptMethod 拦截方法
+     * @param args            参数
      */
-    protected abstract void doPreHandle(WatchContext context);
+    protected abstract void doPreHandle(WatchContext context, Method interceptMethod, Object[] args);
 
     /**
      * 后置处理
      *
-     * @param context
+     * @param context         上下文
+     * @param interceptMethod 拦截方法
+     * @param args            参数
      * @return
      */
     @Override
-    public void postHandle(WatchContext context) {
+    public final void postHandle(WatchContext context, Method interceptMethod, Object[] args) {
         if (context.isEnabled()){
-            doPostHandle(context);
+            try {
+                putContextName(context.getContextName());
+                putWatcherContext(context);
+                putInterceptMethod(interceptMethod);
+                putInterceptMethodArgs(args);
+                doPostHandle(context, interceptMethod, args);
+            } finally {
+                dataThreadLocal.remove();
+            }
         }
     }
+
     /**
      * 后置处理
      *
-     * @param context
+     * @param context         上下文
+     * @param interceptMethod 拦截方法
+     * @param args            参数
+     */
+    protected abstract void doPostHandle(WatchContext context, Method interceptMethod, Object[] args);
+
+    /**
+     * 获取当前监视程序配置
+     *
+     * @return {@link WatcherConfig}
+     */
+    protected WatcherConfig getCurrentWatcherConfig(){
+        Data data = dataThreadLocal.get();
+        WatcherConfig watcherConfig = data.getWatcherConfig();
+        if (Objects.isNull(watcherConfig)){
+            watcherConfig = findWatcherConfig(data.getContextName(), data.getInterceptMethod());
+            data.setWatcherConfig(watcherConfig);
+        }
+        return watcherConfig;
+    }
+
+    /**
+     * 查找WatcherConfig配置
+     * 优先级：
+     *  局部 > 全局
+     *  配置 > 注解
+     * @param contextName
+     * @param interceptMethod
      * @return
      */
-    protected abstract void doPostHandle(WatchContext context);
+    protected WatcherConfig findWatcherConfig(String contextName, Method interceptMethod) {
+        WatcherConfig watcherConfig = new WatcherConfig();
+        TimeWatcher annotation = AnnotatedElementUtils.findMergedAnnotation(interceptMethod, TimeWatcher.class);
+        watcherConfig.setEnabled(annotation.enabled());
+        watcherConfig.setMaxTotalCostMillis(annotation.maxTotalCostMillis());
+        watcherConfig.setMaxCostMillis(annotation.maxCostMillis());
+        watcherConfig.setSampleRate(annotation.sampleRate());
+        watcherConfig.setNoThrows(annotation.noThrows());
+
+        WatcherConfig config = properties.getWatchers().get(contextName);
+        if (Objects.nonNull(config)){
+            if (Objects.nonNull(config.getEnabled())){
+                watcherConfig.setEnabled(config.getEnabled());
+            }
+            // 全局属性
+            if (Objects.equals(config.getEnabled(), Boolean.FALSE)){
+                watcherConfig.setEnabled(config.getEnabled());
+            }
+            if (Objects.nonNull(config.getMaxTotalCostMillis())){
+                watcherConfig.setMaxTotalCostMillis(config.getMaxTotalCostMillis());
+            }
+            if (Objects.nonNull(config.getMaxCostMillis())){
+                watcherConfig.setMaxCostMillis(config.getMaxCostMillis());
+            }
+            if (Objects.nonNull(config.getSampleRate())){
+                watcherConfig.setSampleRate(config.getSampleRate());
+            }
+            if (Objects.nonNull(config.getNoThrows())){
+                watcherConfig.setNoThrows(config.getNoThrows());
+            }
+        }
+        // 全局属性
+        if (Objects.equals(properties.getEnabled(),Boolean.FALSE)){
+            watcherConfig.setEnabled(properties.getEnabled());
+        }
+        if (Objects.nonNull(properties.getMaxTotalCostMillis())){
+            watcherConfig.setMaxTotalCostMillis(properties.getMaxTotalCostMillis());
+        }
+        if (Objects.nonNull(properties.getMaxCostMillis())){
+            watcherConfig.setMaxCostMillis(properties.getMaxCostMillis());
+        }
+        if (Objects.nonNull(properties.getSampleRate())){
+            watcherConfig.setSampleRate(properties.getSampleRate());
+        }
+        if (Objects.nonNull(properties.getNoThrows())){
+            watcherConfig.setNoThrows(properties.getNoThrows());
+        }
+        return watcherConfig;
+    }
+
+
+    private void putInterceptMethod(Method interceptMethod) {
+        dataThreadLocal.get().setInterceptMethod(interceptMethod);
+    }
+
+    private void putContextName(String contextName) {
+        dataThreadLocal.get().setContextName(contextName);
+    }
+
+
+    private void putInterceptMethodArgs(Object[] args) {
+        dataThreadLocal.get().setInterceptMethodArgs(args);
+    }
+
+    private void putWatcherContext(WatchContext watchContext) {
+        dataThreadLocal.get().setWatchContext(watchContext);
+    }
 
     /**
      * 获取当前Http请求
@@ -97,5 +240,53 @@ public abstract class AbstractTimeWatchInterceptor implements TimeWatchIntercept
     @Override
     public int getOrder() {
         return 0;
+    }
+
+    static class Data {
+        private WatchContext watchContext;
+        private WatcherConfig watcherConfig;
+        private String contextName;
+        private Method interceptMethod;
+        private Object[] interceptMethodArgs;
+
+        public WatchContext getWatchContext() {
+            return watchContext;
+        }
+
+        public void setWatchContext(WatchContext watchContext) {
+            this.watchContext = watchContext;
+        }
+
+        public WatcherConfig getWatcherConfig() {
+            return watcherConfig;
+        }
+
+        public void setWatcherConfig(WatcherConfig watcherConfig) {
+            this.watcherConfig = watcherConfig;
+        }
+
+        public String getContextName() {
+            return contextName;
+        }
+
+        public void setContextName(String contextName) {
+            this.contextName = contextName;
+        }
+
+        public Method getInterceptMethod() {
+            return interceptMethod;
+        }
+
+        public void setInterceptMethod(Method interceptMethod) {
+            this.interceptMethod = interceptMethod;
+        }
+
+        public Object[] getInterceptMethodArgs() {
+            return interceptMethodArgs;
+        }
+
+        public void setInterceptMethodArgs(Object[] interceptMethodArgs) {
+            this.interceptMethodArgs = interceptMethodArgs;
+        }
     }
 }

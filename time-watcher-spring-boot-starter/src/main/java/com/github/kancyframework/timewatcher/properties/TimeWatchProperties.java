@@ -21,7 +21,7 @@ public class TimeWatchProperties {
     /**
      * timewatcher功能开关
      */
-    private boolean enabled = true;
+    private Boolean enabled;
     /**
      * watcher配置
      */
@@ -29,15 +29,20 @@ public class TimeWatchProperties {
     /**
      * 全局:最大总耗时（毫秒）
      */
-    private Long maxTotalCostMillis = -1L;
+    private Long maxTotalCostMillis;
     /**
      * 全局:每次Watch最大耗时（毫秒）
      */
-    private Long maxCostMillis = -1L;
+    private Long maxCostMillis;
     /**
      * 全局:不抛出异常
      */
-    private boolean noThrows = true;
+    private Boolean noThrows;
+    /**
+     * 全局:采样率
+     */
+    private Double sampleRate;
+
     /**
      * 全局:扩展属性
      */
