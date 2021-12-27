@@ -8,6 +8,7 @@ import com.github.kancyframework.timewatcher.properties.TimeWatchProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,7 +25,9 @@ import java.util.Objects;
  * @date 2021/12/27 10:49
  */
 @Slf4j
-public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler , InitializingBean, ApplicationContextAware {
+@ConditionalOnClass(JdbcTemplate.class)
+public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
+        InitializingBean, ApplicationContextAware {
 
     private volatile boolean enabled = true;
 

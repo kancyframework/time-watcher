@@ -34,12 +34,6 @@ public class ApiTimeWatchResultHandler implements TimeWatchResultHandler {
      */
     @Override
     public void handle(TimeWatchResultEvent result) {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        result.getWatchContext().saveReport();
-        log.info("save 成功：{}", result.getContextId());
+        log.info("timewatch result: {}", result);
     }
 }
