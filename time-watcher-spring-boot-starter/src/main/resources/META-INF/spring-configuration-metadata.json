@@ -1,187 +1,186 @@
 {
-  "groups": [
+  "groups" : [
     {
-      "name": "timewatcher",
-      "type": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties"
+      "name" : "timewatcher",
+      "type" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties"
     },
     {
-      "name": "timewatcher.task-executor",
-      "type": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties"
+      "name" : "timewatcher.task-executor",
+      "type" : "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties"
     }
   ],
-  "properties": [
+  "properties" : [
     {
-      "name": "timewatcher.enabled",
-      "type": "java.lang.Boolean",
-      "description": "timewatcher功能开关",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
-      "defaultValue": true
+      "name" : "timewatcher.enabled",
+      "type" : "java.lang.Boolean",
+      "description" : "timewatcher功能开关",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue" : true
     },
     {
-      "name": "timewatcher.enabled",
-      "type": "java.lang.Boolean",
-      "description": "全局:不抛出异常",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
-      "defaultValue": true
+      "name" : "timewatcher.no-throws",
+      "type" : "java.lang.Boolean",
+      "description" : "全局:不抛出异常",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue" : true
     },
     {
-      "name": "timewatcher.sample-rate",
-      "type": "java.lang.Double",
-      "description": "全局:采样率",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
-      "defaultValue": 1.0
+      "name" : "timewatcher.sample-rate",
+      "type" : "java.lang.Double",
+      "description" : "全局:采样率",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue" : 1.0
     },
     {
-      "name": "timewatcher.max-cost-millis",
-      "type": "java.lang.Long",
-      "description": "全局:每次Watch最大耗时（毫秒）",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
-      "defaultValue": -1
+      "name" : "timewatcher.max-cost-millis",
+      "type" : "java.lang.Long",
+      "description" : "全局:每次Watch最大耗时（毫秒）",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue" : -1
     },
     {
-      "name": "timewatcher.max-total-cost-millis",
-      "type": "java.lang.Long",
-      "description": "全局:最大总耗时（毫秒）",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
-      "defaultValue": -1
+      "name" : "timewatcher.max-total-cost-millis",
+      "type" : "java.lang.Long",
+      "description" : "全局:最大总耗时（毫秒）",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue" : -1
     },
     {
-      "name": "timewatcher.properties",
-      "type": "java.util.Map<java.lang.String,java.lang.Object>",
-      "description": "全局:扩展属性",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties"
+      "name" : "timewatcher.properties",
+      "type" : "java.util.Map<java.lang.String,java.lang.Object>",
+      "description" : "全局:扩展属性",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties"
     },
     {
-      "name": "timewatcher.task-executor.core-pool-size",
-      "type": "java.lang.Integer",
-      "description": "核心池大小(默认:CPU核数)",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
-      "defaultValue": 0
+      "name" : "timewatcher.task-executor.core-pool-size",
+      "type" : "java.lang.Integer",
+      "description" : "核心池大小(默认:CPU核数)",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "defaultValue" : 0
     },
     {
-      "name": "timewatcher.task-executor.decorate-handlers",
-      "type": "java.util.Map<java.lang.String,java.lang.Boolean>",
-      "description": "decorateHandler开关",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig"
+      "name" : "timewatcher.task-executor.thread-local-handlers",
+      "type" : "java.util.Map<java.lang.String,java.lang.Boolean>",
+      "description" : "threadlocalHandler开关",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig"
     },
     {
-      "name": "timewatcher.task-executor.thread-local-handlers.mdc",
-      "type": "java.lang.Boolean",
-      "description": "MDC threadlocalHandler开关",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
-      "defaultValue": true
+      "name" : "timewatcher.task-executor.thread-local-handlers.mdc",
+      "type" : "java.lang.Boolean",
+      "description" : "MDC threadlocalHandler开关",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "defaultValue" : true
     },
     {
-      "name": "timewatcher.result-handlers.jdbc",
-      "type": "java.lang.Boolean",
-      "description": "JDBC resultHandler开关",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
-      "defaultValue": false
+      "name" : "timewatcher.result-handlers.jdbc",
+      "type" : "java.lang.Boolean",
+      "description" : "JDBC resultHandler开关",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue" : false
     },
     {
-      "name": "timewatcher.result-handlers.oss",
-      "type": "java.lang.Boolean",
-      "description": "OSS resultHandler开关",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
-      "defaultValue": false
+      "name" : "timewatcher.result-handlers.oss",
+      "type" : "java.lang.Boolean",
+      "description" : "OSS resultHandler开关",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue" : false
     },
     {
-      "name": "timewatcher.jdbc-template-bean-name",
-      "type": "java.lang.Boolean",
-      "description": "jdbcTemplate beanName",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
-      "defaultValue": "timewatcherJdbcTemplate"
+      "name" : "timewatcher.jdbc-template-bean-name",
+      "type" : "java.lang.Boolean",
+      "description" : "jdbcTemplate beanName",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue" : "timewatcherJdbcTemplate"
     },
     {
-      "name": "timewatcher.task-executor.keep-alive-seconds",
-      "type": "java.lang.Integer",
-      "description": "保持激活时间（秒）",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
-      "defaultValue": 60
+      "name" : "timewatcher.task-executor.keep-alive-seconds",
+      "type" : "java.lang.Integer",
+      "description" : "保持激活时间（秒）",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "defaultValue" : 60
     },
     {
-      "name": "timewatcher.task-executor.max-pool-size",
-      "type": "java.lang.Integer",
-      "description": "最大池大小(默认:CPU核数 x 2)",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
-      "defaultValue": 0
+      "name" : "timewatcher.task-executor.max-pool-size",
+      "type" : "java.lang.Integer",
+      "description" : "最大池大小(默认:CPU核数 x 2)",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "defaultValue" : 0
     },
     {
-      "name": "timewatcher.task-executor.queue-capacity",
-      "type": "java.lang.Integer",
-      "description": "队列容量",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
-      "defaultValue": 2147483647
+      "name" : "timewatcher.task-executor.queue-capacity",
+      "type" : "java.lang.Integer",
+      "description" : "队列容量",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "defaultValue" : 2147483647
     },
     {
-      "name": "timewatcher.task-executor.rejected-handler-bean-name",
-      "type": "java.lang.String",
-      "description": "拒绝的处理程序bean名称",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig"
+      "name" : "timewatcher.task-executor.rejected-handler-bean-name",
+      "type" : "java.lang.String",
+      "description" : "拒绝的处理程序bean名称",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig"
     },
     {
-      "name": "timewatcher.task-executor.task-decorator-bean-name",
-      "type": "java.lang.String",
-      "description": "任务装饰程序bean名称",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig"
+      "name" : "timewatcher.task-executor.task-decorator-bean-name",
+      "type" : "java.lang.String",
+      "description" : "任务装饰程序bean名称",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig"
     },
     {
-      "name": "timewatcher.task-executor.thread-name-prefix",
-      "type": "java.lang.String",
-      "description": "线程名称前缀",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
-      "defaultValue": "timewatcher-"
+      "name" : "timewatcher.task-executor.thread-name-prefix",
+      "type" : "java.lang.String",
+      "description" : "线程名称前缀",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.ThreadPoolConfig",
+      "defaultValue" : "timewatcher-"
     },
     {
-      "name": "timewatcher.watchers",
-      "type": "java.util.Map<java.lang.String,com.github.kancyframework.timewatcher.properties.WatcherConfig>",
-      "description": "watcher配置",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.TimeWatchProperties"
-    },
-
-    {
-      "name": "timewatcher.watchers.{watcher}.enabled",
-      "type": "java.lang.Boolean",
-      "description": "具体watcher功能开关",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.WatcherConfig",
-      "defaultValue": true
+      "name" : "timewatcher.watchers",
+      "type" : "java.util.Map<java.lang.String,com.github.kancyframework.timewatcher.properties.WatcherConfig>",
+      "description" : "watcher配置",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties"
     },
     {
-      "name": "timewatcher.watchers.{watcher}.no-throws",
-      "type": "java.lang.Boolean",
-      "description": "不抛出异常",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.WatcherConfig",
-      "defaultValue": true
+      "name" : "timewatcher.watchers.{watcher}.enabled",
+      "type" : "java.lang.Boolean",
+      "description" : "具体watcher功能开关",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.WatcherConfig",
+      "defaultValue" : true
     },
     {
-      "name": "timewatcher.watchers.{watcher}.sample-rate",
-      "type": "java.lang.Double",
-      "description": "具体watcher的采样率",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.WatcherConfig",
-      "defaultValue": 1.0
+      "name" : "timewatcher.watchers.{watcher}.no-throws",
+      "type" : "java.lang.Boolean",
+      "description" : "不抛出异常",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.WatcherConfig",
+      "defaultValue" : true
     },
     {
-      "name": "timewatcher.watchers.{watcher}.max-cost-millis",
-      "type": "java.lang.Long",
-      "description": "具体watcher每次Watch最大耗时（毫秒）",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.WatcherConfig",
-      "defaultValue": -1
+      "name" : "timewatcher.watchers.{watcher}.sample-rate",
+      "type" : "java.lang.Double",
+      "description" : "具体watcher的采样率",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.WatcherConfig",
+      "defaultValue" : 1.0
     },
     {
-      "name": "timewatcher.watchers.{watcher}.max-total-cost-millis",
-      "type": "java.lang.Long",
-      "description": "具体watcher最大总耗时（毫秒）",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.WatcherConfig",
-      "defaultValue": -1
+      "name" : "timewatcher.watchers.{watcher}.max-cost-millis",
+      "type" : "java.lang.Long",
+      "description" : "具体watcher每次Watch最大耗时（毫秒）",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.WatcherConfig",
+      "defaultValue" : -1
     },
     {
-      "name": "timewatcher.watchers.{watcher}.properties",
-      "type": "java.util.Map<java.lang.String,java.lang.Object>",
-      "description": "具体watcher扩展属性",
-      "sourceType": "com.github.kancyframework.timewatcher.properties.WatcherConfig"
+      "name" : "timewatcher.watchers.{watcher}.max-total-cost-millis",
+      "type" : "java.lang.Long",
+      "description" : "具体watcher最大总耗时（毫秒）",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.WatcherConfig",
+      "defaultValue" : -1
+    },
+    {
+      "name" : "timewatcher.watchers.{watcher}.properties",
+      "type" : "java.util.Map<java.lang.String,java.lang.Object>",
+      "description" : "具体watcher扩展属性",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.WatcherConfig"
     }
   ],
-  "hints": []
+  "hints" : []
 }
