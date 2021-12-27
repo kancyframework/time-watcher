@@ -1,7 +1,6 @@
 package com.github.kancyframework.timewatcher.demo.controller;
 
 import com.github.kancyframework.timewatcher.TimeWatcher;
-import com.github.kancyframework.timewatcher.annotation.TimeWatch;
 import com.github.kancyframework.timewatcher.annotation.Watcher;
 import com.github.kancyframework.timewatcher.demo.aspect.Test;
 import com.github.kancyframework.timewatcher.demo.service.DemoService;
@@ -25,7 +24,7 @@ public class TimeWatcherTestController {
 
 
     @Test
-    @Watcher(name = "index", enabled = true)
+    @Watcher
     @GetMapping("/index")
     public Object index() throws Exception {
         TimeWatcher.watch("controller-test-1", this::randomSleep);

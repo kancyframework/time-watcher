@@ -136,6 +136,8 @@ public abstract class AbstractTimeWatchInterceptor implements TimeWatchIntercept
      */
     protected WatcherConfig findWatcherConfig(String contextName, Method interceptMethod) {
 
+
+
         WatcherConfig watcherConfig = new WatcherConfig();
         TimeWatcher annotation = AnnotatedElementUtils.findMergedAnnotation(interceptMethod, TimeWatcher.class);
         watcherConfig.setEnabled(annotation.enabled());
@@ -158,7 +160,8 @@ public abstract class AbstractTimeWatchInterceptor implements TimeWatchIntercept
             watcherConfig.setNoThrows(properties.getNoThrows());
         }
 
-        WatcherConfig config = properties.getWatchers().get(contextName);
+        String watcherConfigKey = getWatcherConfigKey(contextName);
+        WatcherConfig config = properties.getWatchers().get(watcherConfigKey);
         if (Objects.nonNull(config)){
             watcherConfig.getProperties().putAll(config.getProperties());
             if (Objects.nonNull(config.getEnabled())){
@@ -184,6 +187,15 @@ public abstract class AbstractTimeWatchInterceptor implements TimeWatchIntercept
         }
 
         return watcherConfig;
+    }
+
+    protected String getWatcherConfigKey(String contextName){
+        String watcherConfigKey = contextName;
+        if (contextName.startsWith("url:")){
+            watcherConfigKey =  contextName.replace("/", "-");
+            return watcherConfigKey;
+        }
+        return watcherConfigKey;
     }
 
 
