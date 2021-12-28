@@ -5,4 +5,4 @@
 
 [time-watcher-spring-boot-starter说明文档](./time-watcher-spring-boot-starter/README.md)
 
-![](https://images.cnblogs.com/cnblogs_com/kancy/2069805/t_211228102630_trace_report_01.png)
+![](https://images.cnblogs.com/cnblogs_com/kancy/2069805/o_211228102630_trace_report_01.png)
