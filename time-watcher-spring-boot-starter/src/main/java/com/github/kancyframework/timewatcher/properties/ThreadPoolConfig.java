@@ -44,7 +44,7 @@ public class ThreadPoolConfig {
     private String threadNamePrefix = "timewatcher-";
 
     /**
-     * decorateHandler开关
+     * threadLocalHandler开关
      */
-    private Map<String, Boolean> decorateHandlers = new HashMap<>();
+    private Map<String, Boolean> threadLocalHandlers = new HashMap<>();
 }

@@ -8,9 +8,7 @@ import com.github.kancyframework.timewatcher.properties.WatcherConfig;
 import org.springframework.core.Ordered;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 

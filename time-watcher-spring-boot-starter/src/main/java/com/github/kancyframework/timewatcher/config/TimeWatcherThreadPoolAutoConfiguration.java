@@ -92,7 +92,7 @@ public class TimeWatcherThreadPoolAutoConfiguration {
             return runnable -> {
                 List<ThreadLocalHandler> handlers = threadLocalHandlers
                         .stream()
-                        .filter(h -> taskProperties.getDecorateHandlers().getOrDefault(h.name(), true))
+                        .filter(h -> taskProperties.getThreadLocalHandlers().getOrDefault(h.name(), true))
                         .collect(Collectors.toList());
                 List<Object> contexts = handlers.stream()
                         .map(ThreadLocalHandler::copyCurrentThreadLocalContext)
