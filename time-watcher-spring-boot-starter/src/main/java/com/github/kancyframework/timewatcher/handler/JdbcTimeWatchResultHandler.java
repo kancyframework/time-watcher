@@ -92,8 +92,8 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
         // 记录报告
         WatchContext watchContext = result.getWatchContext();
         byte[] reportBytes = watchContext.getReportBytes();
-        jdbcTemplate.update("insert into "+getReportTableName()+" (context_id,report_type,report_data) values (?,?,?)",
-                result.getContextId(), 1, reportBytes);
+        jdbcTemplate.update("insert into "+getReportTableName()+" (context_id,context_name,report_type,report_data) values (?,?,?,?)",
+                result.getContextId(), result.getContextName(), 1, reportBytes);
     }
 
     private Object getPropertiesJsonString(Map<String, Object> properties) {
@@ -148,6 +148,7 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `"+getReportTableName()+"` ( " +
                 "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键', " +
                 "  `context_id` varchar(64) NOT NULL COMMENT '上下文ID', " +
+                "  `context_name` varchar(100) DEFAULT NULL COMMENT '上下文名称', " +
                 "  `report_type` tinyint(4) DEFAULT '1' COMMENT '1:png图片', " +
                 "  `report_data` blob COMMENT '报告数据', " +
                 "  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间', " +
