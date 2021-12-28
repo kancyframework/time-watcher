@@ -14,7 +14,10 @@ public class TimeWatchRecord extends WatchRecord{
      * 上下文id
      */
     private String contextId;
-
+    /**
+     * 业务ID
+     */
+    private String bizId;
     /**
      * 跟踪id
      */

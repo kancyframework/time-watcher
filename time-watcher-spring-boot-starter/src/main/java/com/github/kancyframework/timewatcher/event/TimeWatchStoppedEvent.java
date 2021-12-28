@@ -4,6 +4,7 @@ import com.github.kancyframework.timewatcher.TimeWatchRecord;
 import com.github.kancyframework.timewatcher.WatchContext;
 import com.github.kancyframework.timewatcher.WatchRecord;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,8 @@ public class TimeWatchStoppedEvent extends TimeWatchEvent {
         timeWatchRecord.setContextId(watchContext.getContextId());
         timeWatchRecord.setTraceId(watchContext.getTraceId());
         timeWatchRecord.setContextName(watchContext.getContextName());
+        timeWatchRecord.setBizId(StringUtils.hasText(watchContext.getBizId()) ?
+                watchContext.getBizId():watchContext.getContextId());
         timeWatchRecord.setRoot(false);
     }
 

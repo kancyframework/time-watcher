@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -73,27 +74,35 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
     private void doHandle(TimeWatchResultEvent result) {
         // 记录明细
         List<TimeWatchRecord> allTimeWatchRecords = result.getAllTimeWatchRecords();
-        jdbcTemplate.batchUpdate("insert into "+getReportInfoTableName()+" (context_id,context_name,parent_watch_name,watch_name,watch_index,cost_millis,start_time,stop_time,thread_name,trace_id,properties,is_root) " +
-                "values (?,?,?,?,?,?,?,?,?,?,?,?)", allTimeWatchRecords, allTimeWatchRecords.size(), (ps, timeWatchRecord) -> {
+        jdbcTemplate.batchUpdate("insert into "+getReportInfoTableName()+" (context_id,context_name,biz_id,parent_watch_name,watch_name,watch_index,cost_millis,start_time,stop_time,thread_name,trace_id,properties,is_root) " +
+                "values (?,?,?,?,?,?,?,?,?,?,?,?,?)", allTimeWatchRecords, allTimeWatchRecords.size(), (ps, timeWatchRecord) -> {
                     ps.setObject(1, timeWatchRecord.getContextId());
                     ps.setObject(2, timeWatchRecord.getContextName());
-                    ps.setObject(3, timeWatchRecord.getParentWatchName());
-                    ps.setObject(4, timeWatchRecord.getWatchName());
-                    ps.setObject(5, timeWatchRecord.getWatchIndex());
-                    ps.setObject(6, timeWatchRecord.getCostMillis());
-                    ps.setObject(7, timeWatchRecord.getStartTime());
-                    ps.setObject(8, timeWatchRecord.getStopTime());
-                    ps.setObject(9, timeWatchRecord.getThreadName());
-                    ps.setObject(10, timeWatchRecord.getTraceId());
-                    ps.setObject(11, getPropertiesJsonString(timeWatchRecord.getProperties()));
-                    ps.setObject(12, timeWatchRecord.isRoot()?1:0);
+                    ps.setObject(3, timeWatchRecord.getBizId());
+                    ps.setObject(4, timeWatchRecord.getParentWatchName());
+                    ps.setObject(5, timeWatchRecord.getWatchName());
+                    ps.setObject(6, timeWatchRecord.getWatchIndex());
+                    ps.setObject(7, timeWatchRecord.getCostMillis());
+                    ps.setObject(8, timeWatchRecord.getStartTime());
+                    ps.setObject(9, timeWatchRecord.getStopTime());
+                    ps.setObject(10, timeWatchRecord.getThreadName());
+                    ps.setObject(11, timeWatchRecord.getTraceId());
+                    ps.setObject(12, getPropertiesJsonString(timeWatchRecord.getProperties()));
+                    ps.setObject(13, timeWatchRecord.isRoot()?1:0);
                 });
 
         // 记录报告
         WatchContext watchContext = result.getWatchContext();
         byte[] reportBytes = watchContext.getReportBytes();
-        jdbcTemplate.update("insert into "+getReportTableName()+" (context_id,context_name,report_type,report_data) values (?,?,?,?)",
-                result.getContextId(), result.getContextName(), 1, reportBytes);
+        jdbcTemplate.update("insert into "+getReportTableName()+" (context_id,context_name,biz_id,report_type,report_data) values (?,?,?,?,?)",
+                result.getContextId(), result.getContextName(),getBizId(watchContext), 1, reportBytes);
+    }
+
+    private Object getBizId(WatchContext watchContext) {
+        if (StringUtils.hasText(watchContext.getBizId())){
+            return watchContext.getBizId();
+        }
+        return watchContext.getContextId();
     }
 
     private Object getPropertiesJsonString(Map<String, Object> properties) {
@@ -149,6 +158,7 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
                 "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键', " +
                 "  `context_id` varchar(64) NOT NULL COMMENT '上下文ID', " +
                 "  `context_name` varchar(100) DEFAULT NULL COMMENT '上下文名称', " +
+                "  `biz_id` varchar(64) DEFAULT NULL COMMENT '业务ID', " +
                 "  `report_type` tinyint(4) DEFAULT '1' COMMENT '1:png图片', " +
                 "  `report_data` blob COMMENT '报告数据', " +
                 "  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间', " +
@@ -164,6 +174,7 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
                 "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键', " +
                 "  `context_id` varchar(64) DEFAULT NULL COMMENT '上下文ID', " +
                 "  `context_name` varchar(100) DEFAULT NULL COMMENT '上下文名称', " +
+                "  `biz_id` varchar(64) DEFAULT NULL COMMENT '业务ID', " +
                 "  `parent_watch_name` varchar(100) DEFAULT NULL COMMENT '父观测名称', " +
                 "  `watch_name` varchar(100) DEFAULT NULL COMMENT '观测名称', " +
                 "  `watch_index` int(11) DEFAULT NULL COMMENT '观测索引', " +
@@ -178,6 +189,8 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
                 "  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间', " +
                 "  PRIMARY KEY (`id`), " +
                 "  KEY `uniq_context_id_watch_index` (`context_id`,`watch_index`), " +
+                "  KEY `idx_biz_id` (`biz_id`), " +
+                "  KEY `idx_trace_id` (`trace_id`), " +
                 "  KEY `idx_watch_name` (`watch_name`), " +
                 "  KEY `idx_created_at` (`created_at`) " +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");

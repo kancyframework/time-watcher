@@ -33,6 +33,10 @@ public abstract class WatchContext {
      * 上下文id
      */
     private String contextId;
+    /**
+     * 业务ID
+     */
+    private String bizId;
 
     /**
      * 上下文名称
