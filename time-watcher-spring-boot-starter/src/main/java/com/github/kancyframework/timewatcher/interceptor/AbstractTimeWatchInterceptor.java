@@ -6,13 +6,18 @@ import com.github.kancyframework.timewatcher.properties.TimeWatchProperties;
 import com.github.kancyframework.timewatcher.properties.WatcherConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -23,6 +28,9 @@ import java.util.Objects;
  */
 @Slf4j
 public abstract class AbstractTimeWatchInterceptor implements TimeWatchInterceptor,Ordered {
+
+    private static final LocalVariableTableParameterNameDiscoverer parameterNameDiscoverer
+            = new LocalVariableTableParameterNameDiscoverer();
 
     private static final ThreadLocal<Data> dataThreadLocal = ThreadLocal.withInitial(Data::new);
 
@@ -247,6 +255,44 @@ public abstract class AbstractTimeWatchInterceptor implements TimeWatchIntercept
             log.error("getCurrentRequestUrl error : {}", e.getMessage());
         }
         return null;
+    }
+
+    protected Map<String, Object> getInterceptMethodArgs(Method interceptMethod, Object[] args) {
+        if (interceptMethod.getParameterCount() == 0){
+            return Collections.emptyMap();
+        }
+        String[] parameterNames = parameterNameDiscoverer.getParameterNames(interceptMethod);
+        Map<String, Object> map = new HashMap<>();
+        for (int i = 0; i < parameterNames.length; i++) {
+            Object object = args[i];
+            if (Objects.nonNull(object)){
+                map.put(parameterNames[i], object);
+            }
+        }
+        return map;
+    }
+
+    protected Map<String, Object> getCurrentRequestQueryMap() {
+        try {
+            HttpServletRequest currentHttpRequest = getCurrentHttpRequest();
+            if (Objects.nonNull(currentHttpRequest)){
+                String queryString = currentHttpRequest.getQueryString();
+                Map<String, Object> map = new HashMap<>();
+                if (StringUtils.hasText(queryString)){
+                    String[] kvs = queryString.split("&");
+                    for (String kvStr : kvs) {
+                        String[] kv = kvStr.split("=",2);
+                        if (StringUtils.hasText(kv[0]) && StringUtils.hasText(kv[1])){
+                            map.put(kv[0], kv[1]);
+                        }
+                    }
+                }
+                return map;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyMap();
     }
 
     @Override

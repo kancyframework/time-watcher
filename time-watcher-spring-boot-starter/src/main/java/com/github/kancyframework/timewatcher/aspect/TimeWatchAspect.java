@@ -49,8 +49,7 @@ public class TimeWatchAspect implements Ordered {
      * 切点
      */
     @Pointcut("@annotation(com.github.kancyframework.timewatcher.annotation.TimeWatcher) || " +
-              "@annotation(com.github.kancyframework.timewatcher.annotation.Watcher) || " +
-              "@annotation(com.github.kancyframework.timewatcher.annotation.TimeWatch)")
+              "@annotation(com.github.kancyframework.timewatcher.annotation.Watcher)")
     public void timeWatchPointCut() {
         // doNothing
     }

@@ -122,7 +122,7 @@ public class TimeSpanImage {
             }
 
             if (secFlag){
-                String st = new BigDecimal(String.valueOf(t / 1000.0)).setScale(2).stripTrailingZeros().toPlainString() + "s";
+                String st = new BigDecimal(String.valueOf(t / 1000.0)).stripTrailingZeros().toPlainString() + "s";
                 g.drawString(st, i == num ? x - 20 : x, 11);
             }else {
                 g.drawString(String.valueOf(t), i == num ? x - 20 : x, 11);

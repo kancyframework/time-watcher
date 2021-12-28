@@ -19,9 +19,10 @@ public abstract class TimeWatcher {
 
     public static final String PROPERTY_KEY_CLASS_NAME = "__className__";
     public static final String PROPERTY_KEY_METHOD_NAME = "__methodName__";
+    public static final String PROPERTY_KEY_METHOD_ARGS = "__methodArgs__";
     public static final String PROPERTY_KEY_WATCH_SIZE = "__watchSize__";
     public static final String PROPERTY_KEY_URL = "__url__";
-    public static final String PROPERTY_KEY_METHOD_PARAMETER_COUNT = "__methodParameterCount__";
+    public static final String PROPERTY_KEY_URL_QUERY = "__url_query__";
 
     static {
         // 预热加载

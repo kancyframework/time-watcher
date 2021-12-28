@@ -4,8 +4,11 @@ import com.github.kancyframework.timewatcher.TimeWatcher;
 import com.github.kancyframework.timewatcher.annotation.Watcher;
 import com.github.kancyframework.timewatcher.demo.aspect.Test;
 import com.github.kancyframework.timewatcher.demo.service.DemoService;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -42,6 +45,16 @@ public class TimeWatcherTestController {
         return "hello";
     }
 
+    @Test
+    @Watcher(name = "post", maxCostMillis = 9)
+    @PostMapping("/post")
+    public Object post(@RequestBody PostData data) throws Exception {
+        TimeWatcher.watch("controller-post-1", this::randomSleep);
+        TimeWatcher.watch("controller-post-2", ()->sleep(10));
+        TimeWatcher.watch("controller-post-3", this::randomSleep);
+        return "post";
+    }
+
     private void randomSleep() {
         sleep(ThreadLocalRandom.current().nextInt(0,500));
     }
@@ -53,5 +66,12 @@ public class TimeWatcherTestController {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Data
+    static class PostData{
+        private String name;
+        private Integer age;
+        private byte[] bytes;
     }
 }

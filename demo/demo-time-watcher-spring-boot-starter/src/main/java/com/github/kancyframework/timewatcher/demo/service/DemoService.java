@@ -1,7 +1,7 @@
 package com.github.kancyframework.timewatcher.demo.service;
 
 import com.github.kancyframework.timewatcher.TimeWatcher;
-import com.github.kancyframework.timewatcher.annotation.TimeWatch;
+import com.github.kancyframework.timewatcher.annotation.Watcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DemoService {
 
-    @TimeWatch(context = "DemoService.index")
+    @Watcher(name = "DemoService.index")
     public String index() throws Exception{
         TimeWatcher.watch(()-> {
             try {

@@ -32,9 +32,10 @@ public class InnerTimeWatchInterceptor extends AbstractTimeWatchInterceptor{
     protected void doPreHandle(WatchContext context, Method interceptMethod, Object[] args) {
         // 设置内置属性
         context.putContextProperty(TimeWatcher.PROPERTY_KEY_URL, getCurrentRequestUrl());
+        context.putContextProperty(TimeWatcher.PROPERTY_KEY_URL_QUERY, getCurrentRequestQueryMap());
         context.putContextProperty(TimeWatcher.PROPERTY_KEY_CLASS_NAME, interceptMethod.getDeclaringClass().getName());
+        context.putContextProperty(TimeWatcher.PROPERTY_KEY_METHOD_ARGS, getInterceptMethodArgs(interceptMethod, args));
         context.putContextProperty(TimeWatcher.PROPERTY_KEY_METHOD_NAME, interceptMethod.getName());
-        context.putContextProperty(TimeWatcher.PROPERTY_KEY_METHOD_PARAMETER_COUNT, interceptMethod.getParameterCount());
 
         // 设置配置属性
         putContextProperties(context);
