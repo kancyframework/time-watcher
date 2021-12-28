@@ -165,6 +165,7 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
                 "  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间', " +
                 "  PRIMARY KEY (`id`), " +
                 "  KEY `idx_context_id` (`context_id`), " +
+                "  KEY `idx_biz_id` (`biz_id`), " +
                 "  KEY `idx_created_at` (`created_at`) " +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
     }
