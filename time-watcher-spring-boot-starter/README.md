@@ -64,7 +64,7 @@ public class QuickStartController {
 
 ##### 耗时报告
 
-![](../images/quick-start.png)
+![](https://images.cnblogs.com/cnblogs_com/kancy/2069805/o_211228102901_quick-start.png)
 
 
 #### 属性讲解
