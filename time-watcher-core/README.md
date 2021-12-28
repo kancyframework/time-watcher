@@ -28,12 +28,12 @@ TimeWatcher.showGuiReport();
 
 1)简单版本 (单线程串行)
 
-![](../images/quick-start.png)
+![](https://images.cnblogs.com/cnblogs_com/kancy/2069805/o_211228102901_quick-start.png)
 
 2)复杂版本 (多线程串行)
 
-![](../images/trace_report_01.png)
+![](https://images.cnblogs.com/cnblogs_com/kancy/2069805/o_211228102630_trace_report_01.png)
 
 3)高级版本 (多线程串行)
 
-![](../images/trace_report_02.png)
+![](https://images.cnblogs.com/cnblogs_com/kancy/2069805/o_211228102911_trace_report_02.png)
