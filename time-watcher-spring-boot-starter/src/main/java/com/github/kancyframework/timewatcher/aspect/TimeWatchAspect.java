@@ -125,12 +125,13 @@ public class TimeWatchAspect implements Ordered {
                 }
                 // 发送事件
                 if (watchContext.isEnabled()){
-                    TimeWatchStoppedEvent timeWatchStoppedEvent = new TimeWatchResultEvent(joinPoint, TimeWatcher.getWatchContext());
+                    TimeWatchStoppedEvent timeWatchStoppedEvent = new TimeWatchResultEvent(joinPoint, watchContext);
                     timeWatchStoppedEvent.setThrowable(throwable);
                     applicationContext.publishEvent(timeWatchStoppedEvent);
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("timeWatchReturn fail: {}", e.getMessage());
         } finally {
             TimeWatcher.close();

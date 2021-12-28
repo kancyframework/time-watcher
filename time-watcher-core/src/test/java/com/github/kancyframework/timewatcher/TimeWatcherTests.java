@@ -24,9 +24,9 @@ public class TimeWatcherTests {
         TimeWatcher.enabled();
         TimeWatcher.start("test");
         TimeWatcher.watch("test-1", ()-> sleep(100));
-        TimeWatcher.watch("test-2", () -> sleep(100));
-        TimeWatcher.watch("test-3", ()-> sleep(200));
-        TimeWatcher.watch("test-4", ()-> sleep(200));
+        TimeWatcher.watch("test-2", () -> sleep(120));
+        TimeWatcher.watch("test-3", this::randomSleep);
+        TimeWatcher.watch("test-4", this::randomSleep);
         TimeWatcher.stopWatch();
 
         System.out.println(JSON.toJSONString(TimeWatcher.getWatchContext()));

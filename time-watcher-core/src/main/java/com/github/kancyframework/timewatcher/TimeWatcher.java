@@ -31,12 +31,7 @@ public abstract class TimeWatcher {
     /**
      * 线程本地 - 统计相关
      */
-    private static final ThreadLocal<WatchContext> watchContextThreadLocal = new ThreadLocal<WatchContext>(){
-        @Override
-        protected WatchContext initialValue() {
-            return new SimpleWatchContext();
-        }
-    };
+    private static final ThreadLocal<WatchContext> watchContextThreadLocal = ThreadLocal.withInitial(SimpleWatchContext::new);
 
     private static void setEnabled(boolean enabled){
         getWatchContext().setEnabled(enabled);
@@ -70,23 +65,20 @@ public abstract class TimeWatcher {
         watchContextThreadLocal.remove();
     }
 
+    public static void quickStart(String contextName){
+        enabled();
+        doStart(contextName);
+    }
+
     public static void start(String contextName){
-        SimpleWatchContext watchContext = getSimpleWatchContext();
-        if (Objects.isNull(watchContext.getContextId())){
-            try {
-                watchContext.start(contextName);
-            } catch (Exception e) {
-                if (watchContext.getNoThrows()){
-                    log.error("time watcher start fail:", e);
-                }else {
-                    throw e;
-                }
-            }
-            setCallClassNameAndMethodName();
-        }
+        doStart(contextName);
     }
 
     public static void startWatch(String contextName){
+        doStart(contextName);
+    }
+
+    private static void doStart(String contextName){
         SimpleWatchContext watchContext = getSimpleWatchContext();
         if (Objects.isNull(watchContext.getContextId())){
             try {
@@ -322,10 +314,10 @@ public abstract class TimeWatcher {
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
             int callIndex = 3;
             for (int i = 0; i < stackTrace.length; i++) {
+
                 StackTraceElement se = stackTrace[i];
                 if (Objects.equals(se.getClassName(),TimeWatcher.class.getName())
-                    && (Objects.equals(se.getMethodName(), "start")
-                        || Objects.equals(se.getMethodName(), "startWatch"))){
+                    && "quickStart,startWatch,start".contains(se.getMethodName())){
                     callIndex = i + 1;
                     break;
                 }
