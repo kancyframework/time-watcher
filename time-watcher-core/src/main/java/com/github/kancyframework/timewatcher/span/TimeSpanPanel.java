@@ -2,6 +2,7 @@ package com.github.kancyframework.timewatcher.span;
 
 import javax.swing.*;
 import java.awt.*;
+import java.math.BigDecimal;
 import java.text.AttributedString;
 import java.util.List;
 
@@ -47,6 +48,8 @@ public class TimeSpanPanel extends JPanel {
                 AttributedString rootSpanTimeLabelAttributedString = timeSpan.getRootSpanTimeLabelAttributedString();
                 g.drawString(rootSpanTimeLabelAttributedString.getIterator(),
                         timeSpan.getX() + TimeSpan.MAX_WITH - 355, timeSpan.getY()+ TimeSpan.LINE_CENTER);
+                // 画时间刻度
+                drawTimeScale(g, timeSpan);
             }
         }
 
@@ -59,5 +62,35 @@ public class TimeSpanPanel extends JPanel {
 
         // 关闭资源
         g.dispose();
+    }
+
+    private void drawTimeScale(Graphics g, TimeSpan timeSpan) {
+        long totalTime = timeSpan.getTotalTime();
+        int num = 20;
+        double rate = TimeSpan.MAX_WITH * 1.0 / totalTime;
+        double ms = (totalTime * 1.0 / num);
+        double spanLen = ms * rate;
+        int x = 0;
+        int t = 0;
+
+        boolean secFlag = false;
+        if (totalTime > num * 500){
+            secFlag = true;
+        }
+
+        for (int i = 0; i <= num; i++) {
+            t = (int) (i * ms);
+            x = (int) (spanLen * i + TimeSpan.MARGIN);
+            if (x > TimeSpan.MAX_WITH + TimeSpan.MARGIN){
+                break;
+            }
+
+            if (secFlag){
+                String st = new BigDecimal(String.valueOf(t / 1000.0)).setScale(2).stripTrailingZeros().toPlainString() + "s";
+                g.drawString(st, i == num ? x - 20 : x, 11);
+            }else {
+                g.drawString(String.valueOf(t), i == num ? x - 20 : x, 11);
+            }
+        }
     }
 }

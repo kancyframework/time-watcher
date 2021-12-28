@@ -40,6 +40,11 @@ public class WatchContextTimeSpan extends TimeSpan{
     }
 
     @Override
+    public long getTotalTime() {
+        return watchContext.getRootWatchRecord().getCostMillis();
+    }
+
+    @Override
     public Color getSpanColor() {
         if (index < 2){
             return super.getSpanColor();

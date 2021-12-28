@@ -24,7 +24,7 @@ public abstract class TimeSpan {
     public static final int LINE_CENTER = (LINE_HEIGHT + LINE_SPACING * 2 ) / 2 ;
 
     public static final int MARGIN = 60;
-    public static final int MARGIN_TOP = 10;
+    public static final int MARGIN_TOP = 13;
     public static final int CHAR_WITH = 7;
 
     protected int x;
@@ -37,6 +37,10 @@ public abstract class TimeSpan {
 
     public TimeSpan(int index) {
         this.index = index;
+    }
+
+    public long getTotalTime(){
+        return 0;
     }
 
     public Color getSpanColor(){
