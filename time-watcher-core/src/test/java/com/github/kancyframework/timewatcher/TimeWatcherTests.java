@@ -46,11 +46,11 @@ public class TimeWatcherTests {
                 TimeWatcher.close();
             });
         });
-        TimeWatcher.watch("tes3", ()-> sleep(100));
+        TimeWatcher.watch("test3", ()-> sleep(100));
 
         int len = ThreadLocalRandom.current().nextInt(10, 30);
         for (int i = 4; i < len; i++) {
-            TimeWatcher.watch("tes" + i, ()-> sleep(20));
+            TimeWatcher.watch("test" + i, ()-> sleep(20));
         }
 
         TimeWatcher.stopWatch();
