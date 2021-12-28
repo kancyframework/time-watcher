@@ -35,7 +35,7 @@ public class TimeWatcherTests {
     @Test
     public void test02(){
         TimeWatcher.enabled();
-        TimeWatcher.startWatch("test");
+        TimeWatcher.start("test");
 
         TimeWatcher.watch("test1", ()-> sleep(100));
         TimeWatcher.watch(() -> {
@@ -61,7 +61,7 @@ public class TimeWatcherTests {
     @Test
     public void test03(){
         TimeWatcher.enabled();
-        TimeWatcher.startWatch("test");
+        TimeWatcher.start("test");
 
         TimeWatcher.watch("test1", ()-> sleep(100));
 

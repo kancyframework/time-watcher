@@ -17,6 +17,12 @@ import java.util.*;
 @Slf4j
 public abstract class TimeWatcher {
 
+    public static final String PROPERTY_KEY_CLASS_NAME = "__className__";
+    public static final String PROPERTY_KEY_METHOD_NAME = "__methodName__";
+    public static final String PROPERTY_KEY_WATCH_SIZE = "__watchSize__";
+    public static final String PROPERTY_KEY_URL = "__url__";
+    public static final String PROPERTY_KEY_METHOD_PARAMETER_COUNT = "__methodParameterCount__";
+
     static {
         // 预热加载
         preheatLoading(UUID::randomUUID);
@@ -292,11 +298,11 @@ public abstract class TimeWatcher {
 
     private static void putIfAbsentClassAndMethodName(Map<String, Object> properties, SerializableFunction function) {
         if (Objects.nonNull(properties) && isEnabled()) {
-            if (!properties.containsKey("__className__")){
-                properties.put("__className__", function.getWatchClassName());
+            if (!properties.containsKey(TimeWatcher.PROPERTY_KEY_CLASS_NAME)){
+                properties.put(TimeWatcher.PROPERTY_KEY_CLASS_NAME, function.getWatchClassName());
             }
-            if (!properties.containsKey("__methodName__")){
-                properties.put("__methodName__", function.getWatchMethodName());
+            if (!properties.containsKey(TimeWatcher.PROPERTY_KEY_METHOD_NAME)){
+                properties.put(TimeWatcher.PROPERTY_KEY_METHOD_NAME, function.getWatchMethodName());
             }
         }
     }
@@ -308,10 +314,25 @@ public abstract class TimeWatcher {
         SimpleWatchContext watchContext = null;
         try {
             watchContext = getSimpleWatchContext();
-            watchContext.getRootWatchRecord().getProperties().put("__className__",
-                    Thread.currentThread().getStackTrace()[3].getClassName());
-            watchContext.getRootWatchRecord().getProperties().put("__methodName__",
-                    Thread.currentThread().getStackTrace()[3].getMethodName());
+            Map<String, Object> properties = watchContext.getRootWatchRecord().getProperties();
+            if (properties.containsKey(TimeWatcher.PROPERTY_KEY_CLASS_NAME) && properties.containsKey(TimeWatcher.PROPERTY_KEY_METHOD_NAME)){
+                return;
+            }
+
+            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            int callIndex = 3;
+            for (int i = 0; i < stackTrace.length; i++) {
+                StackTraceElement se = stackTrace[i];
+                if (Objects.equals(se.getClassName(),TimeWatcher.class.getName())
+                    && (Objects.equals(se.getMethodName(), "start")
+                        || Objects.equals(se.getMethodName(), "startWatch"))){
+                    callIndex = i + 1;
+                    break;
+                }
+            }
+            StackTraceElement stackTraceElement = stackTrace[callIndex];
+            properties.put(TimeWatcher.PROPERTY_KEY_CLASS_NAME, stackTraceElement.getClassName());
+            properties.put(TimeWatcher.PROPERTY_KEY_METHOD_NAME, stackTraceElement.getMethodName());
         } catch (Exception e) {
             if (Objects.nonNull(watchContext) && watchContext.getNoThrows()){
                 log.warn("setCallClassNameAndMethodName fail : {}", e.getMessage());

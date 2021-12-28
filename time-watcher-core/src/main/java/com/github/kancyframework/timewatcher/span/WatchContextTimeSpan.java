@@ -1,5 +1,6 @@
 package com.github.kancyframework.timewatcher.span;
 
+import com.github.kancyframework.timewatcher.TimeWatcher;
 import com.github.kancyframework.timewatcher.WatchContext;
 import com.github.kancyframework.timewatcher.WatchRecord;
 
@@ -106,7 +107,7 @@ public class WatchContextTimeSpan extends TimeSpan{
         if (Objects.isNull(properties)){
             return getWatchName();
         }
-        Object className = properties.get("__className__");
+        Object className = properties.get(TimeWatcher.PROPERTY_KEY_CLASS_NAME);
         if (Objects.isNull(className)){
             return getWatchName();
         }else {
@@ -141,7 +142,7 @@ public class WatchContextTimeSpan extends TimeSpan{
     }
 
     private String getRootSpanLabel() {
-        Object url = watchContext.getRootWatchRecord().getProperties().get(("__url__"));
+        Object url = watchContext.getRootWatchRecord().getProperties().get((TimeWatcher.PROPERTY_KEY_URL));
         String contextName = watchContext.getContextName();
         return String.format("%sms | %s | %s%s%s",
                 watchRecord.getCostMillis(),
@@ -162,8 +163,8 @@ public class WatchContextTimeSpan extends TimeSpan{
     private String getClassAndMethodLabel(){
         Map<String, Object> properties = watchContext.getRootWatchRecord().getProperties();
         if (Objects.nonNull(properties)){
-            Object className = properties.get("__className__");
-            Object methodName = properties.get("__methodName__");
+            Object className = properties.get(TimeWatcher.PROPERTY_KEY_CLASS_NAME);
+            Object methodName = properties.get(TimeWatcher.PROPERTY_KEY_METHOD_NAME);
             if (Objects.nonNull(className) && Objects.nonNull(className)){
                 return String.format(" [%s.%s]", className, methodName);
             }

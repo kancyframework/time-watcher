@@ -31,10 +31,10 @@ public class InnerTimeWatchInterceptor extends AbstractTimeWatchInterceptor{
     @Override
     protected void doPreHandle(WatchContext context, Method interceptMethod, Object[] args) {
         // 设置内置属性
-        context.putContextProperty("__url__", getCurrentRequestUrl());
-        context.putContextProperty("__className__", interceptMethod.getDeclaringClass().getName());
-        context.putContextProperty("__methodName__", interceptMethod.getName());
-        context.putContextProperty("__methodParameterCount__", interceptMethod.getParameterCount());
+        context.putContextProperty(TimeWatcher.PROPERTY_KEY_URL, getCurrentRequestUrl());
+        context.putContextProperty(TimeWatcher.PROPERTY_KEY_CLASS_NAME, interceptMethod.getDeclaringClass().getName());
+        context.putContextProperty(TimeWatcher.PROPERTY_KEY_METHOD_NAME, interceptMethod.getName());
+        context.putContextProperty(TimeWatcher.PROPERTY_KEY_METHOD_PARAMETER_COUNT, interceptMethod.getParameterCount());
 
         // 设置配置属性
         putContextProperties(context);
@@ -119,7 +119,7 @@ public class InnerTimeWatchInterceptor extends AbstractTimeWatchInterceptor{
             records.get(i).setWatchIndex(i+1);
         }
         // 2.设置内置属性
-        context.putContextProperty("__watchSize__", context.getWatchRecords().size());
+        context.putContextProperty(TimeWatcher.PROPERTY_KEY_WATCH_SIZE, context.getWatchRecords().size());
     }
 
 
