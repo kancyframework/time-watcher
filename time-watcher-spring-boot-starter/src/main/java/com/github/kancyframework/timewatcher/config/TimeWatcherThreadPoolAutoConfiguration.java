@@ -45,7 +45,6 @@ public class TimeWatcherThreadPoolAutoConfiguration {
 
 
     @Bean
-    @ConditionalOnProperty(prefix = "timewatcher.task-executor.thread-local-handlers", name = "mdc", matchIfMissing = true)
     @ConditionalOnMissingBean
     public MdcThreadLocalHandler mdcThreadLocalHandler() {
         return new MdcThreadLocalHandler();
