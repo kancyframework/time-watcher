@@ -45,7 +45,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <junit.version>4.12</junit.version>
-        <fastjson.version>1.2.68</fastjson.version>
+        <fastjson.version>1.2.75</fastjson.version>
         <spring-boot.version>2.3.12.RELEASE</spring-boot.version>
         <time-watcher.version>${version}</time-watcher.version>
     </properties>
