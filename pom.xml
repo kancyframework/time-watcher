@@ -35,6 +35,7 @@
 
     <modules>
         <module>time-watcher-core</module>
+        <module>time-watcher-agent</module>
         <module>time-watcher-spring-boot-starter</module>
     </modules>
 
