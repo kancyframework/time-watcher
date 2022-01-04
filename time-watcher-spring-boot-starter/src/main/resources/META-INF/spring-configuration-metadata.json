@@ -20,6 +20,13 @@
       "defaultValue" : true
     },
     {
+      "name" : "timewatcher.auto-create-sql",
+      "type" : "java.lang.Boolean",
+      "description" : "自动创建SQL开关",
+      "sourceType" : "com.github.kancyframework.timewatcher.properties.TimeWatchProperties",
+      "defaultValue" : true
+    },
+    {
       "name" : "timewatcher.no-throws",
       "type" : "java.lang.Boolean",
       "description" : "全局:不抛出异常",

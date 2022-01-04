@@ -65,6 +65,11 @@ public class TimeWatchProperties {
     private Map<String, Boolean> resultHandlers = new HashMap<>();
 
     /**
+     * 自动创建sql脚本
+     */
+    private Boolean autoCreateSql = Boolean.TRUE;
+
+    /**
      * 线程池属性
      */
     private ThreadPoolConfig taskExecutor = new ThreadPoolConfig();
