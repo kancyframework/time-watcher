@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.github.kancyframework.dingtalk.demo</groupId>
 	<artifactId>demo-time-watcher-spring-boot-starter</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2-RELEASE</version>
 	<name>demo-time-watcher-spring-boot-starter</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>com.github.kancyframework</groupId>
 			<artifactId>time-watcher-spring-boot-starter</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.2-RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

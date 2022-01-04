@@ -6,7 +6,7 @@
 
     <groupId>com.github.kancyframework</groupId>
     <artifactId>time-watcher</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2-RELEASE</version>
     <packaging>pom</packaging>
     <description>耗时分析工具</description>
     <name>time-watcher</name>
