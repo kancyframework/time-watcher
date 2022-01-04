@@ -149,8 +149,11 @@ public class JdbcTimeWatchResultHandler implements TimeWatchResultHandler ,
         }
 
         // 创建表
-        createTableTimewatcherInfo();
-        createTableTimewatcherReport();
+        if (Objects.equals(properties.getAutoCreateSql(), Boolean.TRUE)){
+            createTableTimewatcherInfo();
+            createTableTimewatcherReport();
+        }
+
     }
 
     private void createTableTimewatcherReport() {
