@@ -49,7 +49,7 @@ public class TimeSpanPanel extends JPanel {
                 g.drawString(rootSpanTimeLabelAttributedString.getIterator(),
                         timeSpan.getX() + TimeSpan.MAX_WITH - 355, timeSpan.getY()+ TimeSpan.LINE_CENTER);
                 // 画时间刻度
-                drawTimeScale(g, timeSpan);
+                // drawTimeScale(g, timeSpan);
             }
         }
 
