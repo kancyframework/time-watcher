@@ -278,8 +278,13 @@ public abstract class TimeWatcher {
             WatchRecord currentWatchRecord = watchRecordStack.pop();
             currentWatchRecord.stopRecord();
             // 取出父节点，设置父节点名称
-            String parentWatchName = watchContext.getRootWatchRecord().getWatchName();
-            currentWatchRecord.setParentWatchName(parentWatchName);
+            WatchRecord peek = watchRecordStack.peek();
+            if (Objects.nonNull(peek)){
+                currentWatchRecord.setParentWatchName(peek.getWatchName());
+            } else {
+                String parentWatchName = watchContext.getRootWatchRecord().getWatchName();
+                currentWatchRecord.setParentWatchName(parentWatchName);
+            }
         } catch (Exception e) {
             if (Objects.nonNull(watchContext) && watchContext.getNoThrows()){
                 log.error("postWatch fail: watchName={} , properties={}\n{}", watchName, properties, e);
